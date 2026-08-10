@@ -93,6 +93,20 @@ It also has to be in the source search's pool — that constraint is the point.
 Undated tracks are undated on purpose: the nadan and mappila albums have no release
 year any public source agrees on, so they carry none rather than a confident guess.
 
+## Deploying
+
+The repo is connected to the Vercel project, so **a push to `main` deploys it** —
+Vercel runs `next build` and serves the static export. Nothing else to do.
+
+Gate a curation change on `npm run check-tracks` first: a dead or un-embeddable ID
+does not fail the build, it just silently vanishes from the queue at runtime.
+
+To deploy by hand (a token with access to the `sivajyothis7s-projects` scope):
+
+```bash
+vercel deploy --prod --yes --scope sivajyothis7s-projects
+```
+
 ## Caching
 
 `vercel.json` sets three cache policies, for three different lifetimes:
