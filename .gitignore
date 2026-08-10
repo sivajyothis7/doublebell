@@ -1,0 +1,15 @@
+node_modules/
+.next/
+out/
+.DS_Store
+*.tsbuildinfo
+next-env.d.ts
+.vercel
+
+# Scratch: harvested playlist dumps and the raw thumbnail cache. Both are
+# regenerable and neither belongs in the repo.
+.harvest/
+.cache/
+
+# Local agent/editor scaffolding, not part of the site.
+.claude/

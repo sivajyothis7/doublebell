@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1600" viewBox="0 0 900 1600">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6fa8c4"/>
+      <stop offset="58%" stop-color="#d8bd94"/>
+      <stop offset="100%" stop-color="#f7dcae"/>
+    </linearGradient>
+    <radialGradient id="bloom">
+      <stop offset="0%" stop-color="#ffc978" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#ffc978" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="ledGlow">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="boardGlow">
+      <stop offset="0%" stop-color="#e8b04a" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#e8b04a" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="lampGlow">
+      <stop offset="0%" stop-color="#ffe9a8" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#ffe9a8" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="beam" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffe9a8" stop-opacity="0.32"/>
+      <stop offset="100%" stop-color="#ffe9a8" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="sheen">
+      <stop offset="0%" stop-color="#f5e6bd" stop-opacity="0.42"/>
+      <stop offset="100%" stop-color="#f5e6bd" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="mist" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f6ecd8" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#f6ecd8" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="vignette" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.3"/>
+      <stop offset="26%" stop-color="#000" stop-opacity="0"/>
+      <stop offset="70%" stop-color="#000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0.44"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="904" fill="url(#sky)"/>
+  
+  <circle cx="216" cy="676" r="260" fill="url(#bloom)"/>
+  <circle cx="216" cy="676" r="52" fill="#fff6d8" opacity="0.96"/>
+  <polygon points="0,900 0,709.2 90,711.1 180,719.1 270,717.2 360,743.9 450,711.9 540,665 630,711.1 720,719 810,702.9 900,706 900,900" fill="#93aab0"/>
+  <polygon points="0,900 0,756.7 90,754.8 180,798.1 270,773.1 360,774.5 450,766.1 540,788.9 630,822.8 720,813 810,750.3 900,804 900,900" fill="#5d7d76"/>
+  <g fill="#2c4a44">
+    <rect x="68.4" y="824.8" width="97.3" height="67.2"/>
+    <polygon points="91.4,824.8 142.6,824.8 117,732"/>
+    <rect x="112.9" y="700" width="8.2" height="35.2"/>
+    <rect x="103.7" y="711.2" width="26.6" height="11.2"/>
+  </g>
+  <rect x="0" y="900" width="900" height="700" fill="#a3714c"/>
+  <!-- paddy on the far left, where the road is not -->
+  <polygon points="0,900 324,900 180,1138 0,1222" fill="#bcd0bb"/>
+  <polygon points="0,901 243,901 153,991 0,1019" fill="#f5e6bd" opacity="0.3"/>
+  <!-- the tar, with a pale edge line down each side -->
+  <polygon points="468,900 486,900 1170,1600 -270,1600" fill="#55545a"/>
+  <polygon points="468,900 471,900 -198,1600 -270,1600" fill="#cfc7b2" opacity="0.3"/>
+  <polygon points="483,900 486,900 1170,1600 1098,1600" fill="#cfc7b2" opacity="0.3"/>
+  
+  <polygon points="475.7,901.8 478.2,901.8 478.1,905.5 475.5,905.5" fill="#efe9d8" opacity="0.85"/><polygon points="475.2,910.7 478,910.7 477.8,920 474.7,920" fill="#efe9d8" opacity="0.85"/><polygon points="474.1,930.6 477.6,930.6 477.3,947.4 473.1,947.4" fill="#efe9d8" opacity="0.85"/><polygon points="472.1,964.6 476.9,964.6 476.4,990.3 470.6,990.3" fill="#efe9d8" opacity="0.85"/><polygon points="469.2,1015.5 475.9,1015.5 475.2,1051.4 467.1,1051.4" fill="#efe9d8" opacity="0.85"/><polygon points="465.2,1085.5 474.5,1085.5 473.5,1133 462.5,1133" fill="#efe9d8" opacity="0.85"/><polygon points="460,1176.9 472.7,1176.9 471.5,1237.1 456.5,1237.1" fill="#efe9d8" opacity="0.85"/><polygon points="453.4,1291.9 470.4,1291.9 468.9,1365.8 449.2,1365.8" fill="#efe9d8" opacity="0.85"/><polygon points="445.4,1432.3 467.6,1432.3 465.8,1521 440.3,1521" fill="#efe9d8" opacity="0.85"/>
+  <g><path d="M 14.4 908 Q 16.8 858.5 10.3 818 L 13.9 818 Q 20.4 858.5 21.6 908 Z" fill="#24483a"/><path d="M 12.1 818 Q -11.7 808.2 -35.4 839.5 Q -10.3 813.5 12.1 821.3 Z" fill="#24483a"/><path d="M 12.1 818 Q -6.4 802.7 -24.9 828.9 Q -5.3 807 12.1 820.7 Z" fill="#24483a"/><path d="M 12.1 818 Q -7.7 793.6 -27.4 825.7 Q -6.4 798.6 12.1 821.1 Z" fill="#24483a"/><path d="M 12.1 818 Q 3.1 791.7 -6 818.1 Q 4.2 796.1 12.1 820.7 Z" fill="#24483a"/><path d="M 12.1 818 Q 9.7 790.8 7.4 816.1 Q 10.9 795.4 12.1 820.8 Z" fill="#24483a"/><path d="M 12.1 818 Q 13.3 789.9 14.5 815.9 Q 14.4 794.2 12.1 820.7 Z" fill="#24483a"/><path d="M 12.1 818 Q 22.1 786.4 32 817.7 Q 23.4 791.6 12.1 821.2 Z" fill="#24483a"/><path d="M 12.1 818 Q 30.9 790.5 49.7 823.8 Q 31.9 794.6 12.1 820.5 Z" fill="#24483a"/><path d="M 12.1 818 Q 31 798.7 49.8 827.1 Q 32.2 803.6 12.1 821.1 Z" fill="#24483a"/><path d="M 12.1 818 Q 34.5 804.6 56.8 834.6 Q 35.8 809.9 12.1 821.3 Z" fill="#24483a"/><circle cx="9.9" cy="821.6" r="2" fill="#24483a"/><circle cx="14.8" cy="822.5" r="1.8" fill="#24483a"/></g><g><path d="M 155.8 908 Q 162.7 822.9 162.3 753.3 L 168.5 753.3 Q 168.9 822.9 168.2 908 Z" fill="#24483a"/><path d="M 165.4 753.3 Q 119.5 729.8 73.7 790.5 Q 121.8 738.7 165.4 758.9 Z" fill="#24483a"/><path d="M 165.4 753.3 Q 137.6 723.2 109.7 765.9 Q 139.3 730 165.4 757.6 Z" fill="#24483a"/><path d="M 165.4 753.3 Q 135.7 709.9 106 762.5 Q 138 719.3 165.4 759.2 Z" fill="#24483a"/><path d="M 165.4 753.3 Q 152.5 697 139.6 751 Q 154.3 704.2 165.4 757.8 Z" fill="#24483a"/><path d="M 165.4 753.3 Q 167.8 692.3 170.2 748.7 Q 169.6 699.3 165.4 757.7 Z" fill="#24483a"/><path d="M 165.4 753.3 Q 179.9 699.6 194.5 751.9 Q 182.4 709.6 165.4 759.5 Z" fill="#24483a"/><path d="M 165.4 753.3 Q 188 708.9 210.6 757.3 Q 190.2 717.8 165.4 758.8 Z" fill="#24483a"/><path d="M 165.4 753.3 Q 197.3 727.3 229.2 772.2 Q 199.9 737.9 165.4 759.9 Z" fill="#24483a"/><path d="M 165.4 753.3 Q 199.7 739.7 234 784.8 Q 202.1 749.4 165.4 759.3 Z" fill="#24483a"/><circle cx="161.5" cy="759.5" r="3.5" fill="#24483a"/><circle cx="170" cy="761" r="3.1" fill="#24483a"/></g><g><path d="M 300.3 908 Q 304.7 829.4 296.9 765.1 L 302.6 765.1 Q 310.4 829.4 311.7 908 Z" fill="#24483a"/><path d="M 299.8 765.1 Q 263.3 747.6 226.9 795.7 Q 265 754.3 299.8 769.3 Z" fill="#24483a"/><path d="M 299.8 765.1 Q 273.1 738.4 246.4 778.2 Q 275.2 746.7 299.8 770.2 Z" fill="#24483a"/><path d="M 299.8 765.1 Q 277.1 735.1 254.5 773.1 Q 278.9 741.9 299.8 769.3 Z" fill="#24483a"/><path d="M 299.8 765.1 Q 283.8 718.5 267.8 765.1 Q 285.3 724.5 299.8 768.8 Z" fill="#24483a"/><path d="M 299.8 765.1 Q 294.8 725.4 289.7 762.5 Q 296.9 734 299.8 770.4 Z" fill="#24483a"/><path d="M 299.8 765.1 Q 303.5 715.4 307.3 761.5 Q 305.1 721.7 299.8 769.1 Z" fill="#24483a"/><path d="M 299.8 765.1 Q 318.7 713.5 337.7 765.7 Q 321.3 723.8 299.8 771.5 Z" fill="#24483a"/><path d="M 299.8 765.1 Q 329.5 725.2 359.3 775.5 Q 331.5 733.1 299.8 770 Z" fill="#24483a"/><path d="M 299.8 765.1 Q 329 736.6 358.1 779.8 Q 331.1 745.1 299.8 770.4 Z" fill="#24483a"/><path d="M 299.8 765.1 Q 339.2 747.3 378.6 799.3 Q 341 754.8 299.8 769.7 Z" fill="#24483a"/><circle cx="296.2" cy="770.8" r="3.2" fill="#24483a"/><circle cx="304.1" cy="772.2" r="2.9" fill="#24483a"/></g><g><path d="M 589.2 908 Q 593.5 842.3 589 788.6 L 593.8 788.6 Q 598.2 842.3 598.8 908 Z" fill="#24483a"/><path d="M 591.4 788.6 Q 560 771.5 528.6 813.2 Q 561.9 779.4 591.4 793.5 Z" fill="#24483a"/><path d="M 591.4 788.6 Q 563 764.7 534.7 805 Q 564.4 770.1 591.4 791.9 Z" fill="#24483a"/><path d="M 591.4 788.6 Q 569 760.5 546.5 797.2 Q 571 768.7 591.4 793.7 Z" fill="#24483a"/><path d="M 591.4 788.6 Q 576.6 752.5 561.9 789.8 Q 578.7 760.7 591.4 793.7 Z" fill="#24483a"/><path d="M 591.4 788.6 Q 586.6 744.5 581.8 785.6 Q 588.6 752.4 591.4 793.5 Z" fill="#24483a"/><path d="M 591.4 788.6 Q 598.5 745.3 605.6 786.1 Q 600.1 751.9 591.4 792.7 Z" fill="#24483a"/><path d="M 591.4 788.6 Q 605.2 758.4 618.9 790.4 Q 606.6 764.3 591.4 792.2 Z" fill="#24483a"/><path d="M 591.4 788.6 Q 618.6 752 645.9 798.1 Q 620.4 759.2 591.4 793.1 Z" fill="#24483a"/><path d="M 591.4 788.6 Q 616.6 763.4 641.7 801 Q 618 769.3 591.4 792.3 Z" fill="#24483a"/><path d="M 591.4 788.6 Q 619.6 777 647.8 814.1 Q 621 782.6 591.4 792.1 Z" fill="#24483a"/><circle cx="588.4" cy="793.4" r="2.7" fill="#24483a"/><circle cx="595" cy="794.6" r="2.4" fill="#24483a"/></g><g><path d="M 733.7 908 Q 739.5 848.8 742.9 800.4 L 747.2 800.4 Q 743.8 848.8 742.3 908 Z" fill="#24483a"/><path d="M 745 800.4 Q 720.8 786 696.5 818.5 Q 722.4 792.4 745 804.3 Z" fill="#24483a"/><path d="M 745 800.4 Q 724.4 777.2 703.8 809.4 Q 725.8 782.5 745 803.7 Z" fill="#24483a"/><path d="M 745 800.4 Q 729.6 761.1 714.2 801.3 Q 730.9 766.3 745 803.6 Z" fill="#24483a"/><path d="M 745 800.4 Q 742.1 761 739.1 797.5 Q 743.7 767.7 745 804.5 Z" fill="#24483a"/><path d="M 745 800.4 Q 754.2 759.7 763.4 798.7 Q 755.9 766.3 745 804.5 Z" fill="#24483a"/><path d="M 745 800.4 Q 763.8 765 782.6 804 Q 765.7 772.4 745 805 Z" fill="#24483a"/><path d="M 745 800.4 Q 770.9 773.8 796.7 812.7 Q 772.2 779.2 745 803.7 Z" fill="#24483a"/><path d="M 745 800.4 Q 768.7 787.5 792.4 819 Q 769.8 791.9 745 803.1 Z" fill="#24483a"/><circle cx="742.4" cy="804.7" r="2.4" fill="#24483a"/><circle cx="748.3" cy="805.7" r="2.2" fill="#24483a"/></g><g><path d="M 878.2 908 Q 882 855.3 880.1 812.1 L 883.9 812.1 Q 885.8 855.3 885.8 908 Z" fill="#24483a"/><path d="M 882 812.1 Q 856.8 798.2 831.6 831.7 Q 858.2 803.8 882 815.6 Z" fill="#24483a"/><path d="M 882 812.1 Q 857.1 791.5 832.2 826.7 Q 858.4 796.5 882 815.3 Z" fill="#24483a"/><path d="M 882 812.1 Q 860.4 785.2 838.9 820.4 Q 861.5 789.2 882 814.7 Z" fill="#24483a"/><path d="M 882 812.1 Q 872 784.3 862 812.4 Q 873.6 790.7 882 816.1 Z" fill="#24483a"/><path d="M 882 812.1 Q 877.9 775.1 873.8 809.6 Q 879.3 780.8 882 815.6 Z" fill="#24483a"/><path d="M 882 812.1 Q 886.6 784.9 891.3 810.6 Q 888.2 791 882 815.9 Z" fill="#24483a"/><path d="M 882 812.1 Q 895 781.8 908.1 813.5 Q 896.1 786 882 814.7 Z" fill="#24483a"/><path d="M 882 812.1 Q 898.9 790.8 915.9 818.6 Q 900.6 797.6 882 816.4 Z" fill="#24483a"/><path d="M 882 812.1 Q 902.6 793.1 923.2 823.1 Q 904.3 800 882 816.4 Z" fill="#24483a"/><path d="M 882 812.1 Q 906.2 801.4 930.5 833.3 Q 907.2 805.3 882 814.6 Z" fill="#24483a"/><circle cx="879.6" cy="816" r="2.2" fill="#24483a"/><circle cx="884.9" cy="816.9" r="1.9" fill="#24483a"/></g><g><path d="M 26.9 1632 Q 36.1 1445 12.5 1292 L 26.1 1292 Q 49.7 1445 54.1 1632 Z" fill="#15302a"/><path d="M 19.3 1292 Q -83 1246.1 -185.2 1380.8 Q -78.2 1265.2 19.3 1303.9 Z" fill="#15302a"/><path d="M 19.3 1292 Q -49.5 1222.8 -118.2 1325.7 Q -45.4 1239.3 19.3 1302.3 Z" fill="#15302a"/><path d="M 19.3 1292 Q -35.5 1202.9 -90.3 1306.4 Q -30.5 1222.9 19.3 1304.5 Z" fill="#15302a"/><path d="M 19.3 1292 Q -9.2 1168.2 -37.7 1287 Q -4.2 1188.4 19.3 1304.6 Z" fill="#15302a"/><path d="M 19.3 1292 Q 28.3 1183.1 37.3 1284.3 Q 33.7 1204.9 19.3 1305.6 Z" fill="#15302a"/><path d="M 19.3 1292 Q 51.8 1195.8 84.2 1291.9 Q 56.9 1216.4 19.3 1304.9 Z" fill="#15302a"/><path d="M 19.3 1292 Q 63.9 1203.5 108.6 1299.7 Q 67.9 1219.5 19.3 1302 Z" fill="#15302a"/><path d="M 19.3 1292 Q 83.8 1222.1 148.4 1321.3 Q 87.6 1237.1 19.3 1301.4 Z" fill="#15302a"/><path d="M 19.3 1292 Q 103.6 1243.5 187.8 1356 Q 108.1 1261.8 19.3 1303.4 Z" fill="#15302a"/><circle cx="10.8" cy="1305.6" r="7.7" fill="#15302a"/><circle cx="29.5" cy="1309" r="6.8" fill="#15302a"/></g><g><path d="M 857.8 1696 Q 877.6 1487 887.3 1316 L 902.5 1316 Q 892.8 1487 888.2 1696 Z" fill="#15302a"/><path d="M 894.9 1316 Q 806.1 1276.9 717.3 1393.8 Q 810.5 1294.7 894.9 1327.1 Z" fill="#15302a"/><path d="M 894.9 1316 Q 799.6 1231.2 704.2 1368.5 Q 805.2 1253.9 894.9 1330.2 Z" fill="#15302a"/><path d="M 894.9 1316 Q 818 1205.6 741.1 1340.6 Q 822.4 1223.3 894.9 1327 Z" fill="#15302a"/><path d="M 894.9 1316 Q 861.9 1198.2 829 1313.2 Q 866.1 1214.8 894.9 1326.4 Z" fill="#15302a"/><path d="M 894.9 1316 Q 893.9 1198.2 893 1307.1 Q 899.7 1221.2 894.9 1330.3 Z" fill="#15302a"/><path d="M 894.9 1316 Q 925.1 1187.2 955.2 1311 Q 928.9 1202.8 894.9 1325.7 Z" fill="#15302a"/><path d="M 894.9 1316 Q 961 1184 1027.1 1327.2 Q 965.7 1203 894.9 1327.9 Z" fill="#15302a"/><path d="M 894.9 1316 Q 982.7 1218.1 1070.5 1354.6 Q 987.4 1236.9 894.9 1327.7 Z" fill="#15302a"/><path d="M 894.9 1316 Q 999.3 1255.4 1103.7 1394.9 Q 1004 1274.2 894.9 1327.8 Z" fill="#15302a"/><circle cx="885.4" cy="1331.2" r="8.5" fill="#15302a"/><circle cx="906.3" cy="1335" r="7.6" fill="#15302a"/></g>
+  <rect x="56.8" y="833" width="2.6" height="178.9" fill="#4a4038"/><rect x="51.3" y="833" width="13.4" height="2.3" fill="#4a4038"/><rect x="44.2" y="895.3" width="3.4" height="235" fill="#4a4038"/><rect x="37.1" y="895.3" width="17.6" height="3.1" fill="#4a4038"/><rect x="30.3" y="1003" width="4.3" height="297.4" fill="#4a4038"/><rect x="21.2" y="1003" width="22.3" height="3.9" fill="#4a4038"/><rect x="14.2" y="1172.3" width="5.3" height="369.2" fill="#4a4038"/><rect x="3" y="1172.3" width="27.7" height="4.8" fill="#4a4038"/><path d="M 58.1 835 Q 52 872.8 45.9 897.3" stroke="#4a4038" stroke-width="1.4" fill="none" opacity="0.85"/><path d="M 45.9 897.3 Q 39.2 958.1 32.4 1005" stroke="#4a4038" stroke-width="2" fill="none" opacity="0.85"/><path d="M 32.4 1005 Q 24.6 1097.1 16.9 1174.3" stroke="#4a4038" stroke-width="2.6" fill="none" opacity="0.85"/>
+  
+  <g>
+    <ellipse cx="495" cy="1447.7" rx="306.9" ry="23.1" fill="#000" opacity="0.3"/>
+
+    <!-- flank: upper body, belt, lower body -->
+    <path d="M 562 926.6 L 774 983.1 L 774 1231.6 L 562 1209 Z" fill="#cfc9b8"/>
+    <path d="M 562 1209 L 774 1231.6 L 774 1409.2 L 562 1429.7 Z" fill="#9a2621"/>
+    <rect x="568.3" y="1020.1" width="31.1" height="133.5" rx="4.5" fill="#8fb0b2" opacity="0.9"/><rect x="608.2" y="1031.4" width="31.1" height="125.5" rx="4.5" fill="#8fb0b2" opacity="0.9"/><rect x="648" y="1042.7" width="31.1" height="117.5" rx="4.5" fill="#8fb0b2" opacity="0.9"/><rect x="687.9" y="1054" width="31.1" height="109.4" rx="4.5" fill="#8fb0b2" opacity="0.9"/><rect x="727.8" y="1065.2" width="31.1" height="101.4" rx="4.5" fill="#8fb0b2" opacity="0.9"/>
+    
+
+    <!-- front face -->
+    <rect x="216" y="926.6" width="346" height="503.1" rx="19.5" fill="#f2efe4"/>
+    <rect x="216" y="1209" width="346" height="220.7" fill="#c4342b"/>
+
+    <!-- the pinstripes between the two bodies: as many as will fit.
+         Drawn twice — square across the front face, then sheared along the
+         flank, because a single rectangle across the whole bus crosses the
+         flank's belt line at the wrong angle and reads as a mistake. -->
+    <rect x="216" y="1191" width="346" height="12.3" fill="#f0a83c" opacity="1"/><polygon points="562,1191 774,1213.6 774,1225.9 562,1203.3" fill="#f0a83c" opacity="1"/>
+    <rect x="216" y="1205.4" width="346" height="5.6" fill="#1f6f8b" opacity="1"/><polygon points="562,1205.4 774,1228 774,1233.6 562,1211" fill="#1f6f8b" opacity="1"/>
+    <rect x="216" y="1213.1" width="346" height="3.1" fill="#f7f4ec" opacity="0.8"/><polygon points="562,1213.1 774,1235.7 774,1238.8 562,1216.2" fill="#f7f4ec" opacity="0.8"/>
+
+    <!-- roof and the LED strip along its edge -->
+    <rect x="209.3" y="912.3" width="359.4" height="21.6" rx="10.3" fill="#fbf9f1"/>
+    <path d="M 562 920.5 L 774 980.5 L 774 993.4 L 562 937.9 Z" fill="#fbf9f1"/>
+    <rect x="236.8" y="924.6" width="304.4" height="6.2" rx="3.1" fill="#ffffff" opacity="0.8"/>
+    
+
+    <!-- destination board: blank on purpose, every word on this site is HTML -->
+    <rect x="247.1" y="951.3" width="283.7" height="37" rx="4.1" fill="#cfc9b8"/>
+    <rect x="252.3" y="955.4" width="273.3" height="28.7" rx="2.6" fill="#e8b04a" opacity="0.95"/>
+    
+
+    <!-- windscreen, split by the centre pillar these buses all have -->
+    <rect x="235" y="1013.9" width="145.3" height="133.5" rx="6.7" fill="#d6e4dc"/>
+    <rect x="397.6" y="1013.9" width="145.3" height="133.5" rx="6.7" fill="#d6e4dc"/>
+    
+    <!-- wipers -->
+    <path d="M 271.4 1139.4 L 333.6 1070" stroke="#211f20" stroke-width="3.3" opacity="0.55"/>
+    <path d="M 430.5 1139.4 L 492.8 1070" stroke="#211f20" stroke-width="3.3" opacity="0.55"/>
+
+    <!-- entry door on the near corner, where the conductor hangs out of it -->
+    <polygon points="565.1,1019 577.9,1020.7 577.9,1388.7 565.1,1388.7" fill="#8fb0b2" opacity="0.9"/>
+
+    <!-- grille, bumper, lamps -->
+    <rect x="285.2" y="1250.1" width="207.6" height="35.9" rx="4.1" fill="#9a2621" opacity="0.9"/>
+    <rect x="211.5" y="1373.3" width="354.9" height="38.5" rx="6.2" fill="#f7f4ec" opacity="0.92"/>
+    <circle cx="267.9" cy="1332.2" r="21.2" fill="#fdf3d0"/>
+    <circle cx="510.1" cy="1332.2" r="21.2" fill="#fdf3d0"/>
+    <circle cx="319.8" cy="1393.8" r="10" fill="#f0a83c" opacity="0.9"/>
+    <circle cx="458.2" cy="1393.8" r="10" fill="#f0a83c" opacity="0.9"/>
+    
+
+    <!-- wheels: one under the front face, one back along the flank -->
+    <circle cx="527.4" cy="1412.1" r="32.4" fill="#211f20"/>
+    <circle cx="718.2" cy="1399.5" r="27.9" fill="#211f20"/>
+  </g>
+  <rect x="0" y="820" width="900" height="320" fill="url(#mist)"/>
+  <rect width="900" height="1600" fill="url(#vignette)"/>
+</svg>
