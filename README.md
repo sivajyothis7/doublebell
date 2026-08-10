@@ -87,6 +87,19 @@ enough that the whole bus hears it whether or not it wants to?
 Undated tracks are undated on purpose: the nadan and mappila albums have no release
 year any public source agrees on, so they carry none rather than a confident guess.
 
+## Caching
+
+`vercel.json` sets three cache policies, for three different lifetimes:
+
+- `/covers/*` — immutable, one year. A cover is keyed by YouTube video ID and a
+  given ID's artwork never changes; a different cover means a different track and
+  so a different filename.
+- `/assets/*` — one day fresh, then a week of serving the old copy while the new
+  one is fetched. These have stable names and *can* change when `npm run art`
+  re-renders them.
+- everything — `nosniff`, a strict referrer policy, and framing denied. The page
+  embeds a YouTube player and nothing else.
+
 ## Credits
 
 Songs belong to their composers, singers, lyricists and labels, and play from their
