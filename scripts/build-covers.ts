@@ -18,7 +18,7 @@
  * re-run after adding a few tracks only fetches the new ones.
  */
 
-import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import sharp from "sharp";
 import { tracks } from "../src/content";
@@ -140,6 +140,17 @@ async function main() {
     for (const line of missing) console.error(`  ${line}`);
     process.exit(1);
   }
+
+  /*
+   * Prune. A curation change that drops a song used to leave its cover behind for
+   * good — the playlist went 63 → 74 → 49 and the folder still held 118 files, all
+   * of them deployed. The set of covers is exactly the set of tracks.
+   */
+  const wanted = new Set(tracks.map((track) => coverFile(track.youtubeId)));
+  const present = await readdir(OUT_DIR);
+  const orphans = present.filter((name) => name.endsWith(".webp") && !wanted.has(name));
+  for (const name of orphans) await rm(join(OUT_DIR, name));
+  if (orphans.length) console.log(`  pruned ${orphans.length} cover(s) for dropped tracks`);
 
   const files = (await readdir(OUT_DIR)).length;
   console.log(

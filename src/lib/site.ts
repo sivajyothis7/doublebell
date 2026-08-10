@@ -29,19 +29,14 @@ export const site = {
 } as const;
 
 /**
- * Where to go when you want the whole thing in your own library instead.
+ * The shelf this playlist came off.
  *
- * This is YouTube Music's own "bus hits malayalam" search — the same place a good
- * part of this playlist was mined from, and the honest answer to "can I take this
- * with me": no, but here is the shelf it came off.
+ * Every song here was mined from this one search and the playlists it surfaces, so
+ * linking to it is not decoration — it is the source, and the honest answer to "can
+ * I take this with me": no, but here is where to keep digging.
  */
-export const YT_MUSIC_SEARCH = "https://music.youtube.com/search?q=bus+hits+malayalam";
-
-/** Whose bus this is. */
-export const AUTHOR = {
-  name: "Sivajyothis",
-  url: "https://github.com/sivajyothis7",
-} as const;
+export const SOURCE_SEARCH =
+  "https://www.youtube.com/results?search_query=bus+hits+malayalam";
 
 /**
  * Whether the YouTube iframe is shown in the deck.

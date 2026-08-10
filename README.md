@@ -16,11 +16,12 @@ its own curation and its own bell.
 
 ## What it is
 
-- **74 curated songs**, each one a real YouTube upload from a label, studio or
-  artist channel wherever one exists — those are the ones that stay up. Mined from
-  fan-made "kerala private bus" playlists and from YouTube Music's own
-  [bus hits malayalam](https://music.youtube.com/search?q=bus+hits+malayalam)
-  search, which the site also links out to.
+- **49 curated songs, all from one place**: the YouTube search
+  [`bus hits malayalam`](https://www.youtube.com/results?search_query=bus+hits+malayalam)
+  and the playlists it surfaces. `npm run mine-search` ranks that pool by reading
+  each upload's own metadata; the site links back to the search. Every ID is a
+  label, studio or artist-channel upload wherever one exists — those are the ones
+  that stay up.
 - **No hosted audio, ever.** Playback runs through the YouTube IFrame Player API,
   and the player is visible in the deck rather than hidden, which is what YouTube's
   terms ask for. It is dressed as the screen bolted above the windscreen of every
@@ -65,7 +66,8 @@ and every YouTube specific lives behind the adapter seam.
 | --- | --- |
 | `npm test` | The engine suite. Offline, ~300ms. |
 | `npm run check-tracks` | Validates the playlist, then proves every ID still resolves. Gate this before a deploy. |
-| `npm run resolve-tracks` | Turns `scripts/candidates.ts` into real uploads with metadata read off each one. Curation research, not a build step. |
+| `npm run mine-search` | Ranks the `bus hits malayalam` search pool by what each upload's own metadata says. Curation research, not a build step. |
+| `npm run resolve-tracks` | Older, name-first path: turns `scripts/candidates.ts` into real uploads. Kept for looking a specific song up. |
 | `npm run art` | Renders the four plates → `public/assets`. |
 | `npm run covers` | Bakes one square cover per track → `public/covers`. |
 | `npm run og` | Composes the share card. Needs `npm run fonts` once. |
@@ -80,12 +82,13 @@ The inclusion filter is not "good Malayalam song". It is: would this come out of
 blown eight-inch speaker over a diesel engine, somewhere between two towns, loud
 enough that the whole bus hears it whether or not it wants to?
 
-1. Add a line to `scripts/candidates.ts`.
-2. `npm run resolve-tracks` — it searches, prefers the label channels, and prints
-   the film, year, composer and singer it could read off the upload.
-3. Add the entry to `src/content/tracks.ts`, with the Malayalam title typed by hand.
-4. `npm run check-tracks && npm run covers`.
-5. Open a pull request.
+It also has to be in the source search's pool — that constraint is the point.
+
+1. `./.harvest/ytsearch.sh` to re-dump the pool, then `npm run mine-search`.
+2. Take an entry it marked `keep` and add it to `src/content/tracks.ts`, with the
+   Malayalam title typed by hand and the **film's** year, not the upload's.
+3. `npm run check-tracks && npm run covers`.
+4. Open a pull request.
 
 Undated tracks are undated on purpose: the nadan and mappila albums have no release
 year any public source agrees on, so they carry none rather than a confident guess.
@@ -105,7 +108,7 @@ year any public source agrees on, so they carry none rather than a confident gue
 
 ## Credits
 
-❤️ by [Sivajyothis](https://github.com/sivajyothis7).
+❤️ by Sivajyothis.
 
 Songs belong to their composers, singers, lyricists and labels, and play from their
 own YouTube uploads. This is a listening room pointed at them, not a copy of them.

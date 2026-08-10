@@ -114,6 +114,11 @@ async function probeAll(list: readonly Track[]): Promise<Result[]> {
   return results;
 }
 
+/**
+ * The floor. The playlist is sourced from one search's pool, so it is bounded by
+ * what that pool actually contains once the jukeboxes, the other-language drift and
+ * the metadata-less uploads come out — which is around fifty, not a hundred.
+ */
 const MINIMUM = 40;
 
 async function main() {

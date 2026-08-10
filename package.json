@@ -15,7 +15,8 @@
     "og": "tsx scripts/build-og.ts",
     "fonts": "tsx scripts/fetch-fonts.ts",
     "check-tracks": "tsx scripts/check-tracks.ts",
-    "resolve-tracks": "tsx scripts/resolve-tracks.ts"
+    "resolve-tracks": "tsx scripts/resolve-tracks.ts",
+    "mine-search": "tsx scripts/mine-search.ts"
   },
   "dependencies": {
     "lucide-react": "1.31.0",
