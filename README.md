@@ -16,8 +16,11 @@ its own curation and its own bell.
 
 ## What it is
 
-- **63 curated songs**, each one a real YouTube upload from a label, studio or
-  artist channel wherever one exists — those are the ones that stay up.
+- **74 curated songs**, each one a real YouTube upload from a label, studio or
+  artist channel wherever one exists — those are the ones that stay up. Mined from
+  fan-made "kerala private bus" playlists and from YouTube Music's own
+  [bus hits malayalam](https://music.youtube.com/search?q=bus+hits+malayalam)
+  search, which the site also links out to.
 - **No hosted audio, ever.** Playback runs through the YouTube IFrame Player API,
   and the player is visible in the deck rather than hidden, which is what YouTube's
   terms ask for. It is dressed as the screen bolted above the windscreen of every
@@ -101,6 +104,8 @@ year any public source agrees on, so they carry none rather than a confident gue
   embeds a YouTube player and nothing else.
 
 ## Credits
+
+❤️ by [Sivajyothis](https://github.com/sivajyothis7).
 
 Songs belong to their composers, singers, lyricists and labels, and play from their
 own YouTube uploads. This is a listening room pointed at them, not a copy of them.

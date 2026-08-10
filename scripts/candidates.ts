@@ -171,4 +171,35 @@ export const CANDIDATES: readonly Candidate[] = [
   { song: "Kanni Prasavam", film: "Kalabhavan Mani", vibe: "mappila", hint: "mappila pattu audio song" },
   { song: "Kadakkanninmunakonden", film: "Kalabhavan Mani", vibe: "mappila", hint: "mappila pattu audio song" },
   { song: "Kattile Kaatana", film: "Kalabhavan Mani", vibe: "nadan", hint: "ballettan molalledi nadan pattu" },
+  /*
+   * ── third pass: the YT Music "bus hits malayalam" search ─────────────────
+   *
+   * Mined from music.youtube.com/search?q=bus+hits+malayalam — the curated bus
+   * playlists behind it, plus YouTube Music's own auto-radio mixes. The radios
+   * drift into Hindi and Tamil after a dozen tracks, so this is the Malayalam
+   * residue, together with the staples the first two passes searched for and
+   * missed.
+   */
+  { song: "Confusion Theerkkaname", vibe: "mass", hint: "malayalam song official" },
+  { song: "Kudamullakkadavil", film: "Vellithira", vibe: "melody", hint: "Alphonse Joseph video song" },
+  { song: "Maattupetti Koyilile", vibe: "nadan", hint: "malayalam nadan pattu" },
+  { song: "Kaattumalli", vibe: "melody", hint: "malayalam film video song" },
+  { song: "Enthe Innum Vanneela", vibe: "melody", hint: "malayalam film song" },
+  { song: "Punchirikkana", vibe: "melody", hint: "malayalam film video song" },
+  { song: "Koovaram Kili", vibe: "nadan", hint: "malayalam song" },
+  { song: "Chanchala Druthapadha Thaalam", vibe: "mass", hint: "malayalam film song" },
+  { song: "Sukhamaanee Nilaavu", vibe: "melody", hint: "malayalam film song" },
+  { song: "Oruvenal Puzhayil", vibe: "melody", hint: "malayalam film song" },
+  { song: "Therirangum Mukile", vibe: "melody", hint: "malayalam film song" },
+  { song: "Podipaarana", vibe: "mass", hint: "malayalam video song" },
+
+  // staples the earlier passes searched for and drifted off
+  { song: "Ente Khalbile", film: "Classmates", vibe: "mass", hint: "Vellaram Kunnil Vidhu Prathap Alex Paul audio song" },
+  { song: "Kalabham Tharam Kammal", film: "Aniyathipraavu", vibe: "mass", hint: "Kunchacko Boban Shalini video song" },
+  { song: "Etho Varmukilin", film: "Pathram", vibe: "melody", hint: "Suresh Gopi Vidyasagar audio song" },
+  { song: "Kannil Kannil Minnalai", film: "Niram", vibe: "melody", hint: "Kunchacko Boban Shalini Vidyasagar" },
+  { song: "Devi Atmaragam Padu", film: "Chithram", vibe: "melody", hint: "Mohanlal Kannur Rajan Yesudas" },
+  { song: "Aaro Viral Meettum", film: "Chandralekha", vibe: "melody", hint: "Mohanlal Vidyasagar Yesudas song" },
+  { song: "Kandu Randu Kannu", film: "Kilichundan Mampazham", vibe: "mass", hint: "Mohanlal Vidyasagar audio" },
+  { song: "Olathumbathirunnu", film: "Kannezhuthi Pottum Thottu", vibe: "nadan", hint: "Manju Warrier Vidyasagar" },
 ];

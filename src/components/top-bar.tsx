@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import LinkOut from "./link-out";
 import RouteBoard from "./route-board";
 import SearchSheet from "./search-sheet";
 import SettingsSheet from "./settings-sheet";
@@ -47,6 +48,7 @@ export default function TopBar() {
       <RouteBoard />
 
       <div className="flex items-center justify-self-end sm:gap-1">
+        <LinkOut />
         <SearchSheet />
         <SettingsSheet />
       </div>

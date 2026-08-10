@@ -27,9 +27,22 @@ export type Palette = {
   /** Water in the paddy, and the sheen it throws back. */
   water: string;
   waterSheen: string;
-  /** Palms and the near vegetation. */
+  /** Palms and the near vegetation, far to near. */
+  canopyFar: string;
   canopy: string;
   canopyNear: string;
+  /** Banana leaves in the foreground — the other plant on every Kerala verge. */
+  banana: string;
+  bananaShade: string;
+  /** Laterite: the red cut earth this whole state is built on and out of. */
+  laterite: string;
+  lateriteShade: string;
+  /** A tiled-roof house behind the trees, and the light in its window. */
+  houseWall: string;
+  houseRoof: string;
+  houseWindow: string;
+  /** A country boat on the water. */
+  boat: string;
   /** A spire on the skyline — every one of these roads has one. */
   spire: string;
   /** Tar, its markings, the laterite shoulder, and the poles along it. */
@@ -83,10 +96,19 @@ export const PALETTES: Record<Period, Palette> = {
     discRadius: 52,
     hillFar: "#93aab0",
     hillMid: "#5d7d76",
-    water: "#bcd0bb",
+    water: "#a9c6ac",
     waterSheen: "#f5e6bd",
-    canopy: "#24483a",
-    canopyNear: "#15302a",
+    canopyFar: "#4a7466",
+    canopy: "#1f4436",
+    canopyNear: "#123026",
+    banana: "#2f6b46",
+    bananaShade: "#1c4a31",
+    laterite: "#b4643c",
+    lateriteShade: "#8e4a2c",
+    houseWall: "#f0e6d2",
+    houseRoof: "#a8502f",
+    houseWindow: "#8a7a5e",
+    boat: "#3a2a1e",
     spire: "#2c4a44",
     road: "#55545a",
     roadLine: "#efe9d8",
@@ -109,7 +131,7 @@ export const PALETTES: Record<Period, Palette> = {
     headlampBeam: "#ffe9a8",
     board: "#e8b04a",
     mist: "#f6ecd8",
-    mistOpacity: 0.55,
+    mistOpacity: 0.3,
     starOpacity: 0,
     lit: false,
   },
@@ -128,10 +150,19 @@ export const PALETTES: Record<Period, Palette> = {
     discRadius: 30,
     hillFar: "#182739",
     hillMid: "#101b28",
-    water: "#0d1822",
+    water: "#0b1620",
     waterSheen: "#3d6178",
-    canopy: "#070f16",
-    canopyNear: "#04090e",
+    canopyFar: "#122132",
+    canopy: "#0a131c",
+    canopyNear: "#050a0f",
+    banana: "#0c1a1d",
+    bananaShade: "#060f12",
+    laterite: "#2e1c16",
+    lateriteShade: "#1e120e",
+    houseWall: "#1b2430",
+    houseRoof: "#2a1a16",
+    houseWindow: "#f0b657",
+    boat: "#080d12",
     spire: "#0a141c",
     road: "#14181f",
     roadLine: "#a09a86",
@@ -154,7 +185,7 @@ export const PALETTES: Record<Period, Palette> = {
     headlampBeam: "#ffe6a0",
     board: "#e0a03c",
     mist: "#22364a",
-    mistOpacity: 0.38,
+    mistOpacity: 0.3,
     starOpacity: 0.8,
     lit: true,
   },

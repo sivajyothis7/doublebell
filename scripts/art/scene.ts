@@ -1,22 +1,33 @@
 /**
  * The artwork.
  *
- * Four plates — morning and night, landscape and portrait — drawn here as SVG
- * and rasterised by `npm run art`. Nothing on this page is a photograph or a
- * generated image: it is a screen-print-flavoured poster of the one thing this
- * site is about, a private bus on a two-lane road somewhere between two Kerala
- * towns, built out of shapes so it can be re-lit, re-composed for a phone, and
- * corrected when the bus is wrong.
+ * Four plates — morning and night, landscape and portrait — drawn here as SVG and
+ * rasterised by `npm run art`. Nothing on this page is a photograph or a generated
+ * image: it is a screen-print-flavoured poster of the one thing this site is about,
+ * a private bus on a road somewhere between two Kerala towns, built out of shapes
+ * so it can be re-lit, re-composed for a phone, and corrected when it is wrong.
+ *
+ * **What makes it Kerala rather than generically tropical.** A palm on a beach is
+ * anywhere. This is the specific stack you see out of a bus window between two
+ * towns, and every layer of it is here for that reason:
+ *
+ *  · laterite — the red cut earth this state is built on and out of, left standing
+ *    wherever a road was carved into a slope
+ *  · greenery that presses in rather than decorates: coconut over banana over
+ *    undergrowth, close enough to the tar to touch the bus
+ *  · a Mangalore-tiled roof with one lit window behind the trees
+ *  · paddy and backwater on the low side, a country boat pulled up in it
+ *  · a spire on the skyline, and the Ghats behind it in monsoon haze
+ *  · wet tar, because it has just rained, because it is Kerala
  *
  * Two rules the drawing follows, both deliberate:
  *
  *  · **No text of any kind.** The destination board is blank amber. Every word on
- *    this site is HTML — a raster would put Malayalam beyond selection, search
- *    and screen readers, and would render it badly besides.
+ *    this site is HTML — a raster would put Malayalam beyond selection, search and
+ *    screen readers, and would render it badly besides.
  *  · **No real operator's livery, name or number plate.** Kerala's private buses
  *    are individually owned and the paintwork is the owner's signature. This is a
- *    generic bus wearing generic stripes; recognising a specific one would be a
- *    bug.
+ *    generic bus wearing generic stripes; recognising a specific one would be a bug.
  */
 
 import { type Palette, PALETTES, type Period } from "./palette";
@@ -41,13 +52,29 @@ type Frame = {
 };
 
 /**
- * Landscape leaves the bus room to be looked at; portrait brings it much nearer
- * and drops the horizon, because a phone that simply crops the wide plate gets a
- * tall picture of sky with a speck in it.
+ * Landscape leaves the bus room to be looked at and keeps the left third open for
+ * the title; portrait brings it much nearer and drops the horizon, because a phone
+ * that simply crops the wide plate gets a tall picture of sky with a speck in it.
  */
 const FRAMES: Record<Orientation, Frame> = {
-  landscape: { width: 1600, height: 900, horizon: 470, roadHalf: 0.62, busWidth: 0.34, busX: 0.74, busBase: 0.95 },
-  portrait: { width: 900, height: 1600, horizon: 900, roadHalf: 0.8, busWidth: 0.62, busX: 0.55, busBase: 0.9 },
+  landscape: {
+    width: 1600,
+    height: 900,
+    horizon: 470,
+    roadHalf: 0.56,
+    busWidth: 0.34,
+    busX: 0.74,
+    busBase: 0.95,
+  },
+  portrait: {
+    width: 900,
+    height: 1600,
+    horizon: 900,
+    roadHalf: 0.74,
+    busWidth: 0.62,
+    busX: 0.55,
+    busBase: 0.9,
+  },
 };
 
 /** Deterministic noise, so re-running the build produces byte-identical plates. */
@@ -63,6 +90,9 @@ function random(seed: number): () => number {
 }
 
 const r = (value: number) => Math.round(value * 10) / 10;
+
+/** Is this the tall plate? Several layers compose differently for a phone. */
+const isTall = (frame: Frame) => frame.height > frame.width;
 
 /* ─────────────────────────────────────────────────────────────────── sky ── */
 
@@ -104,11 +134,11 @@ function ridge(frame: Frame, seed: number, top: number, amplitude: number, fill:
 }
 
 /**
- * A church or mosque on the skyline — a spire, a cross-bar and a little dome.
- * Both are on every one of these roads, and at this size they read the same.
+ * A church or mosque on the skyline — a spire, a cross-bar and a little dome. Both
+ * are on every one of these roads, and at this size they read the same.
  */
 function spire(frame: Frame, palette: Palette): string {
-  const x = frame.width * 0.13;
+  const x = frame.width * 0.11;
   const base = frame.horizon - frame.height * 0.005;
   const h = frame.height * 0.1;
   const w = h * 0.16;
@@ -120,14 +150,21 @@ function spire(frame: Frame, palette: Palette): string {
   </g>`;
 }
 
-/* ───────────────────────────────────────────────────────────────── palms ── */
+/* ────────────────────────────────────────────────────────────── vegetation ── */
 
 /**
- * A coconut palm as a silhouette: a trunk that leans, and fronds falling away
- * from the crown. Drawn rather than sourced, so the lean and the frond count
- * vary per tree and the row does not look stamped out.
+ * A coconut palm: a trunk that leans, and fronds falling away from the crown.
+ * Drawn rather than sourced, so the lean and the frond count vary per tree and the
+ * row does not look stamped out.
  */
-function palm(x: number, baseY: number, scale: number, lean: number, fill: string, seed: number): string {
+function palm(
+  x: number,
+  baseY: number,
+  scale: number,
+  lean: number,
+  fill: string,
+  seed: number,
+): string {
   const next = random(seed);
   const h = 200 * scale;
   const crownX = x + lean * h * 0.24;
@@ -145,8 +182,6 @@ function palm(x: number, baseY: number, scale: number, lean: number, fill: strin
   for (let i = 0; i < count; i++) {
     const angle = -Math.PI + (Math.PI * (i + 0.5)) / count + (next() - 0.5) * 0.22;
     const length = (84 + next() * 40) * scale;
-    // Fronds arc up out of the crown and then fall — one control point above the
-    // chord for the spine, one below it for the return edge.
     const tipX = crownX + Math.cos(angle) * length;
     const tipY = crownY + Math.sin(angle) * length * 0.55 + length * 0.5;
     const midX = crownX + Math.cos(angle) * length * 0.5;
@@ -166,85 +201,176 @@ function palm(x: number, baseY: number, scale: number, lean: number, fill: strin
   return `<g>${trunk}${fronds.join("")}${nuts}</g>`;
 }
 
-function palms(frame: Frame, palette: Palette): string {
-  const out: string[] = [];
-  const count = frame.height > frame.width ? 7 : 11;
+/**
+ * A banana plant: a short stem and five or six broad paddle leaves fanned around
+ * it. These are what actually crowd a Kerala verge under the coconuts, and their
+ * flat mass is what stops the foreground reading as a row of sticks.
+ */
+function banana(
+  x: number,
+  baseY: number,
+  scale: number,
+  fill: string,
+  shade: string,
+  seed: number,
+): string {
+  const next = random(seed);
+  const stem = 52 * scale;
+  const parts: string[] = [
+    `<rect x="${r(x - 4 * scale)}" y="${r(baseY - stem)}" width="${r(8 * scale)}" height="${r(stem)}" fill="${shade}"/>`,
+  ];
+
+  const count = 5 + Math.floor(next() * 2);
+  for (let i = 0; i < count; i++) {
+    // Fan the leaves either side, the outer ones drooping nearly to the ground.
+    const t = (i + 0.5) / count;
+    const angle = -Math.PI * 0.92 + Math.PI * 0.84 * t;
+    const length = (96 + next() * 46) * scale;
+    const width = (26 + next() * 12) * scale;
+    const tipX = x + Math.cos(angle) * length;
+    const tipY = baseY - stem + Math.sin(angle) * length * 0.7 + length * 0.28;
+    const midX = x + Math.cos(angle) * length * 0.5;
+    const midY = baseY - stem + Math.sin(angle) * length * 0.5;
+    parts.push(
+      `<path d="M ${r(x)} ${r(baseY - stem)} ` +
+        `Q ${r(midX)} ${r(midY - width)} ${r(tipX)} ${r(tipY)} ` +
+        `Q ${r(midX)} ${r(midY + width)} ${r(x)} ${r(baseY - stem)} Z" ` +
+        `fill="${i % 2 === 0 ? fill : shade}"/>`,
+    );
+  }
+
+  return `<g>${parts.join("")}</g>`;
+}
+
+/**
+ * The far tree line: a dense band of small palms along the horizon, standing in a
+ * flat mass of canopy. Kerala's middle distance is never open — there is always
+ * another row of trees behind the one you can see.
+ */
+function treeLine(frame: Frame, palette: Palette): string {
+  const { width, horizon, height } = frame;
+  const out: string[] = [
+    `<rect x="0" y="${r(horizon - height * 0.035)}" width="${width}" height="${r(height * 0.045)}" fill="${palette.canopyFar}" opacity="0.85"/>`,
+  ];
+  const count = isTall(frame) ? 12 : 20;
   for (let i = 0; i < count; i++) {
     const t = i / (count - 1);
-    // Skip the middle of the frame: that is where the road goes.
-    if (t > 0.34 && t < 0.62) continue;
-    const x = frame.width * (0.02 + t * 0.96);
     out.push(
       palm(
-        x,
-        frame.horizon + 8,
-        0.45 + ((i * 37) % 13) / 34,
-        (((i * 53) % 7) - 3) / 11,
-        palette.canopy,
-        900 + i * 7,
+        width * (-0.02 + t * 1.04),
+        horizon + 4,
+        0.3 + ((i * 29) % 9) / 40,
+        (((i * 47) % 7) - 3) / 14,
+        palette.canopyFar,
+        700 + i * 11,
       ),
     );
   }
-
-  // Two near trees frame the picture and give the flat scene some depth.
-  out.push(palm(frame.width * 0.045, frame.height * 1.02, 1.7, -0.26, palette.canopyNear, 4242));
-  out.push(palm(frame.width * 0.97, frame.height * 1.06, 1.9, 0.24, palette.canopyNear, 1717));
   return out.join("");
 }
 
-/** Electric poles down the near shoulder, wires dipping between them. */
-function poles(frame: Frame, palette: Palette): string {
-  const out: string[] = [];
-  const stops = [0.34, 0.52, 0.72, 0.95];
-  const previous: { x: number; top: number }[] = [];
+/** The mid-ground palms, close enough to the road to lean over it. */
+function midPalms(frame: Frame, palette: Palette): string {
+  const { width, horizon, height } = frame;
+  const stops = isTall(frame)
+    ? [0.03, 0.13, 0.24, 0.8, 0.9, 0.99]
+    : [0.02, 0.09, 0.16, 0.24, 0.32, 0.86, 0.93, 0.99];
 
-  for (const t of stops) {
-    // Nearer poles are lower on the frame and much taller on screen.
-    const y = frame.horizon + (frame.height - frame.horizon) * t ** 1.7;
-    const scale = 0.35 + t * 1.5;
-    const x = frame.width * (0.09 - t * 0.075);
-    const h = frame.height * 0.13 * scale;
-    const w = 3 * scale;
-    out.push(
-      `<rect x="${r(x - w / 2)}" y="${r(y - h)}" width="${r(w)}" height="${r(h)}" fill="${palette.pole}"/>` +
-        `<rect x="${r(x - w * 2.6)}" y="${r(y - h)}" width="${r(w * 5.2)}" height="${r(w * 0.9)}" fill="${palette.pole}"/>`,
-    );
-    previous.push({ x, top: y - h });
-  }
-
-  for (let i = 0; i < previous.length - 1; i++) {
-    const a = previous[i];
-    const b = previous[i + 1];
-    if (!a || !b) continue;
-    const sag = Math.abs(b.x - a.x) * 0.22 + 6;
-    out.push(
-      `<path d="M ${r(a.x)} ${r(a.top + 2)} Q ${r((a.x + b.x) / 2)} ${r((a.top + b.top) / 2 + sag)} ` +
-        `${r(b.x)} ${r(b.top + 2)}" stroke="${palette.pole}" stroke-width="${r(1.4 + i * 0.6)}" fill="none" opacity="0.85"/>`,
-    );
-  }
-
-  return out.join("");
+  return stops
+    .map((t, i) => {
+      // Nearer the frame edge means nearer the viewer, so bigger and lower.
+      const nearness = Math.abs(t - 0.5) * 2;
+      return palm(
+        width * t,
+        horizon + height * (0.03 + nearness * 0.16),
+        0.65 + nearness * 0.5,
+        (t < 0.5 ? -1 : 1) * (0.1 + ((i * 31) % 5) / 30),
+        palette.canopy,
+        3100 + i * 13,
+      );
+    })
+    .join("");
 }
 
-/* ────────────────────────────────────────────────────── ground and road ── */
+/* ─────────────────────────────────────────────────────── ground and road ── */
+
+/**
+ * Paddy and backwater on the low side of the road, with bunds across it and a
+ * country boat pulled up. The water is what the mist sits on in the morning and
+ * what throws the moon back at night.
+ */
+function paddy(frame: Frame, palette: Palette): string {
+  const { width, height, horizon } = frame;
+  const depth = height - horizon;
+  const edgeX = width * 0.34;
+  const nearY = horizon + depth * 0.5;
+
+  const bunds = [0.18, 0.34]
+    .map((t) => {
+      const y = horizon + depth * t;
+      return (
+        `<path d="M 0 ${r(y)} L ${r(edgeX * (1 - t * 0.9))} ${r(y - depth * 0.02)}" ` +
+        `stroke="${palette.lateriteShade}" stroke-width="${r(2 + t * 6)}" fill="none" opacity="0.7"/>`
+      );
+    })
+    .join("");
+
+  // A vallam: a long shallow hull with a raised prow, seen almost end-on.
+  const bx = width * 0.14;
+  const by = horizon + depth * 0.24;
+  const bl = width * 0.1;
+  const boat =
+    `<path d="M ${r(bx)} ${r(by)} Q ${r(bx + bl * 0.5)} ${r(by + depth * 0.022)} ${r(bx + bl)} ${r(by - depth * 0.004)} ` +
+    `L ${r(bx + bl)} ${r(by - depth * 0.016)} Q ${r(bx + bl * 0.5)} ${r(by + depth * 0.006)} ${r(bx)} ${r(by - depth * 0.012)} Z" ` +
+    `fill="${palette.boat}"/>` +
+    `<path d="M ${r(bx + bl)} ${r(by - depth * 0.016)} L ${r(bx + bl * 1.16)} ${r(by - depth * 0.05)}" ` +
+    `stroke="${palette.boat}" stroke-width="${r(width * 0.003)}"/>`;
+
+  return `<polygon points="0,${r(horizon)} ${r(edgeX)},${r(horizon)} ${r(edgeX * 0.55)},${r(nearY)} 0,${r(nearY + depth * 0.12)}" fill="${palette.water}"/>
+  <polygon points="0,${r(horizon + 1)} ${r(edgeX * 0.8)},${r(horizon + 1)} ${r(edgeX * 0.55)},${r(horizon + depth * 0.11)} 0,${r(horizon + depth * 0.14)}" fill="${palette.waterSheen}" opacity="${palette.lit ? 0.22 : 0.34}"/>
+  ${bunds}
+  ${boat}`;
+}
+
+/**
+ * A tiled-roof house behind the trees. One lit window at night, which is the whole
+ * reason it is here: it puts somebody at home on the other side of the glass.
+ */
+function house(frame: Frame, palette: Palette): string {
+  const { width, height, horizon } = frame;
+  const w = width * (isTall(frame) ? 0.16 : 0.095);
+  const h = w * 0.56;
+  const x = width * (isTall(frame) ? 0.08 : 0.4);
+  const base = horizon + height * 0.028;
+
+  return `<g>
+    <!-- a plinth, because a Kerala house stands a step above its own yard -->
+    <rect x="${r(x - w * 0.06)}" y="${r(base - h * 0.16)}" width="${r(w * 1.12)}" height="${r(h * 0.16)}" fill="${palette.lateriteShade}"/>
+    <rect x="${r(x)}" y="${r(base - h)}" width="${r(w)}" height="${r(h)}" fill="${palette.houseWall}"/>
+    <!-- Mangalore tiles: a low hip roof, overhanging well past the wall -->
+    <polygon points="${r(x - w * 0.1)},${r(base - h)} ${r(x + w * 1.1)},${r(base - h)} ${r(x + w * 0.78)},${r(base - h * 1.5)} ${r(x + w * 0.22)},${r(base - h * 1.5)}" fill="${palette.houseRoof}"/>
+    <rect x="${r(x + w * 0.18)}" y="${r(base - h * 0.72)}" width="${r(w * 0.22)}" height="${r(h * 0.4)}" fill="${palette.houseWindow}" opacity="${palette.lit ? 0.95 : 0.7}"/>
+    ${palette.lit ? `<rect x="${r(x + w * 0.02)}" y="${r(base - h * 0.95)}" width="${r(w * 0.56)}" height="${r(h * 0.8)}" fill="url(#windowGlow)"/>` : ""}
+  </g>`;
+}
 
 function ground(frame: Frame, palette: Palette): string {
   const { width, height, horizon } = frame;
-  const ground = height - horizon;
-  // The road runs almost straight at the viewer, its vanishing point a little
-  // right of centre so the bus can sit on the near lane without facing us dead-on.
+  const depth = height - horizon;
+  // The road runs almost straight at the viewer, its vanishing point a little right
+  // of centre so the bus can sit on the near lane without facing us dead-on.
   const vanishX = width * 0.53;
   const halfBottom = width * frame.roadHalf;
 
   const dashes: string[] = [];
   for (let i = 0; i < 10; i++) {
     const t = i / 10;
-    const next = (i + 0.55) / 10;
+    const step = (i + 0.55) / 10;
     // Equal steps in the world are tiny on screen near the horizon.
     const e1 = t ** 2.6;
-    const e2 = next ** 2.6;
-    const y1 = horizon + ground * e1;
-    const y2 = horizon + ground * e2;
+    const e2 = step ** 2.6;
+    const y1 = horizon + depth * e1;
+    const y2 = horizon + depth * e2;
     if (y2 - y1 < 1.5) continue;
     const c1 = vanishX + (width * 0.5 - vanishX) * e1;
     const c2 = vanishX + (width * 0.5 - vanishX) * e2;
@@ -256,20 +382,78 @@ function ground(frame: Frame, palette: Palette): string {
     );
   }
 
+  /**
+   * The laterite cut on the high side. Where a Kerala road was carved into a slope,
+   * the red earth is left standing in a vertical face with the trees on top of it —
+   * and that face, more than the palms, is what places this in Kerala.
+   */
+  const cut =
+    `<polygon points="${r(vanishX + 10)},${r(horizon)} ${width},${r(horizon + depth * 0.1)} ${width},${r(horizon + depth * 0.34)} ${r(vanishX + 14)},${r(horizon + 2)}" fill="${palette.laterite}"/>` +
+    `<polygon points="${r(vanishX + 10)},${r(horizon)} ${width},${r(horizon + depth * 0.1)} ${width},${r(horizon + depth * 0.16)} ${r(vanishX + 12)},${r(horizon + 1)}" fill="${palette.lateriteShade}" opacity="0.8"/>`;
+
+  // Wet tar: it has just rained, so the lamps and the LEDs smear down the road.
   const wet = palette.lit
-    ? `<ellipse cx="${r(width * frame.busX)}" cy="${r(height * 0.99)}" rx="${r(width * 0.34)}" ry="${r(ground * 0.16)}" fill="url(#sheen)"/>`
+    ? `<ellipse cx="${r(width * frame.busX)}" cy="${r(height * 0.99)}" rx="${r(width * 0.34)}" ry="${r(depth * 0.16)}" fill="url(#sheen)"/>` +
+      `<ellipse cx="${r(width * 0.36)}" cy="${r(height * 0.93)}" rx="${r(width * 0.1)}" ry="${r(depth * 0.03)}" fill="${palette.waterSheen}" opacity="0.14"/>`
     : "";
 
-  return `<rect x="0" y="${r(horizon)}" width="${width}" height="${r(ground)}" fill="${palette.shoulder}"/>
-  <!-- paddy on the far left, where the road is not -->
-  <polygon points="0,${r(horizon)} ${r(width * 0.36)},${r(horizon)} ${r(width * 0.2)},${r(horizon + ground * 0.34)} 0,${r(horizon + ground * 0.46)}" fill="${palette.water}"/>
-  <polygon points="0,${r(horizon + 1)} ${r(width * 0.27)},${r(horizon + 1)} ${r(width * 0.17)},${r(horizon + ground * 0.13)} 0,${r(horizon + ground * 0.17)}" fill="${palette.waterSheen}" opacity="0.3"/>
+  return `<rect x="0" y="${r(horizon)}" width="${width}" height="${r(depth)}" fill="${palette.shoulder}"/>
+  ${paddy(frame, palette)}
+  ${cut}
   <!-- the tar, with a pale edge line down each side -->
   <polygon points="${r(vanishX - 9)},${r(horizon)} ${r(vanishX + 9)},${r(horizon)} ${r(width * 0.5 + halfBottom)},${height} ${r(width * 0.5 - halfBottom)},${height}" fill="${palette.road}"/>
-  <polygon points="${r(vanishX - 9)},${r(horizon)} ${r(vanishX - 6)},${r(horizon)} ${r(width * 0.5 - halfBottom * 0.9)},${height} ${r(width * 0.5 - halfBottom)},${height}" fill="${palette.roadEdge}" opacity="0.3"/>
-  <polygon points="${r(vanishX + 6)},${r(horizon)} ${r(vanishX + 9)},${r(horizon)} ${r(width * 0.5 + halfBottom)},${height} ${r(width * 0.5 + halfBottom * 0.9)},${height}" fill="${palette.roadEdge}" opacity="0.3"/>
+  <polygon points="${r(vanishX - 9)},${r(horizon)} ${r(vanishX - 6)},${r(horizon)} ${r(width * 0.5 - halfBottom * 0.94)},${height} ${r(width * 0.5 - halfBottom)},${height}" fill="${palette.roadEdge}" opacity="0.3"/>
+  <polygon points="${r(vanishX + 6)},${r(horizon)} ${r(vanishX + 9)},${r(horizon)} ${r(width * 0.5 + halfBottom)},${height} ${r(width * 0.5 + halfBottom * 0.94)},${height}" fill="${palette.roadEdge}" opacity="0.3"/>
   ${wet}
   ${dashes.join("")}`;
+}
+
+/** Electric poles down the near shoulder, wires dipping between them. */
+function poles(frame: Frame, palette: Palette): string {
+  const out: string[] = [];
+  const tops: { x: number; top: number }[] = [];
+
+  for (const t of [0.34, 0.52, 0.72, 0.95]) {
+    const y = frame.horizon + (frame.height - frame.horizon) * t ** 1.7;
+    const scale = 0.35 + t * 1.5;
+    const x = frame.width * (0.09 - t * 0.075);
+    const h = frame.height * 0.13 * scale;
+    const w = 3 * scale;
+    out.push(
+      `<rect x="${r(x - w / 2)}" y="${r(y - h)}" width="${r(w)}" height="${r(h)}" fill="${palette.pole}"/>` +
+        `<rect x="${r(x - w * 2.6)}" y="${r(y - h)}" width="${r(w * 5.2)}" height="${r(w * 0.9)}" fill="${palette.pole}"/>`,
+    );
+    tops.push({ x, top: y - h });
+  }
+
+  for (let i = 0; i < tops.length - 1; i++) {
+    const a = tops[i];
+    const b = tops[i + 1];
+    if (!a || !b) continue;
+    const sag = Math.abs(b.x - a.x) * 0.22 + 6;
+    out.push(
+      `<path d="M ${r(a.x)} ${r(a.top + 2)} Q ${r((a.x + b.x) / 2)} ${r((a.top + b.top) / 2 + sag)} ` +
+        `${r(b.x)} ${r(b.top + 2)}" stroke="${palette.pole}" stroke-width="${r(1.4 + i * 0.6)}" fill="none" opacity="0.85"/>`,
+    );
+  }
+
+  return out.join("");
+}
+
+/**
+ * The undergrowth at the frame edge: two near palms and three banana plants, dark
+ * and out of focus, pressing in on the tar. This is the layer that turns a flat
+ * poster into something seen *from* somewhere.
+ */
+function foreground(frame: Frame, palette: Palette): string {
+  const { width, height } = frame;
+  return [
+    palm(width * 0.03, height * 1.03, 1.75, -0.26, palette.canopyNear, 4242),
+    palm(width * 0.98, height * 1.07, 1.95, 0.24, palette.canopyNear, 1717),
+    banana(width * 0.12, height * 1.02, 1.25, palette.banana, palette.bananaShade, 5150),
+    banana(width * -0.01, height * 0.95, 1, palette.banana, palette.bananaShade, 6161),
+    banana(width, height * 0.99, 1.35, palette.banana, palette.bananaShade, 7272),
+  ].join("");
 }
 
 /* ─────────────────────────────────────────────────────────────────── bus ── */
@@ -290,7 +474,6 @@ function bus(frame: Frame, palette: Palette): string {
   const x = cx - w * 0.5;
   const y = base - h;
 
-  // Front face and the flank running away to the right.
   const fw = w * 0.62;
   const flank = w - fw;
   /** How much the flank's far end rises, i.e. the foreshortening. */
@@ -308,7 +491,7 @@ function bus(frame: Frame, palette: Palette): string {
     `fill="${fill}" opacity="${opacity}"/>`;
 
   const windows: string[] = [];
-  const lights: string[] = [];
+  const heads: string[] = [];
   const count = 5;
   for (let i = 0; i < count; i++) {
     const t = i / count;
@@ -322,7 +505,7 @@ function bus(frame: Frame, palette: Palette): string {
     );
     if (palette.lit) {
       // A head in most windows. This is a bus with people on it.
-      lights.push(
+      heads.push(
         `<circle cx="${r(wx + gap * 0.36)}" cy="${r(top + glassH * shrink * 0.72)}" r="${r(w * 0.018 * shrink)}" fill="#2a1a0c" opacity="0.5"/>`,
       );
     }
@@ -337,20 +520,17 @@ function bus(frame: Frame, palette: Palette): string {
   <g>
     <ellipse cx="${r(cx)}" cy="${r(base + h * 0.015)}" rx="${r(w * 0.55)}" ry="${r(h * 0.045)}" fill="#000" opacity="${palette.lit ? 0.55 : 0.3}"/>
 
-    <!-- flank: upper body, belt, lower body -->
+    <!-- flank: upper body, then lower body -->
     <path d="M ${r(x + fw)} ${r(y)} L ${r(x + w)} ${r(y + rise)} L ${r(x + w)} ${r(beltY + rise * 0.4)} L ${r(x + fw)} ${r(beltY)} Z" fill="${palette.busUpperShade}"/>
     <path d="M ${r(x + fw)} ${r(beltY)} L ${r(x + w)} ${r(beltY + rise * 0.4)} L ${r(x + w)} ${r(base - h * 0.06)} L ${r(x + fw)} ${r(base - h * 0.02)} Z" fill="${palette.busLowerShade}"/>
     ${windows.join("")}
-    ${lights.join("")}
+    ${heads.join("")}
 
     <!-- front face -->
     <rect x="${r(x)}" y="${r(y)}" width="${r(fw)}" height="${r(h * 0.98)}" rx="${r(w * 0.035)}" fill="${palette.busUpper}"/>
     <rect x="${r(x)}" y="${r(beltY)}" width="${r(fw)}" height="${r(base - beltY - h * 0.02)}" fill="${palette.busLower}"/>
 
-    <!-- the pinstripes between the two bodies: as many as will fit.
-         Drawn twice — square across the front face, then sheared along the
-         flank, because a single rectangle across the whole bus crosses the
-         flank's belt line at the wrong angle and reads as a mistake. -->
+    <!-- the pinstripes between the two bodies: as many as will fit -->
     ${stripe(beltY - h * 0.035, h * 0.024, palette.stripeA)}
     ${stripe(beltY - h * 0.007, h * 0.011, palette.stripeB)}
     ${stripe(beltY + h * 0.008, h * 0.006, palette.chrome, 0.8)}
@@ -364,13 +544,12 @@ function bus(frame: Frame, palette: Palette): string {
     <!-- destination board: blank on purpose, every word on this site is HTML -->
     <rect x="${r(x + fw * 0.09)}" y="${r(y + h * 0.048)}" width="${r(fw * 0.82)}" height="${r(h * 0.072)}" rx="${r(h * 0.008)}" fill="${palette.busUpperShade}"/>
     <rect x="${r(x + fw * 0.105)}" y="${r(y + h * 0.056)}" width="${r(fw * 0.79)}" height="${r(h * 0.056)}" rx="${r(h * 0.005)}" fill="${palette.board}" opacity="0.95"/>
-    ${palette.lit ? `<rect x="${r(x + fw * 0.1)}" y="${r(y + h * 0.05)}" width="${r(fw * 0.8)}" height="${r(h * 0.075)}" rx="${r(h * 0.008)}" fill="url(#boardGlow)"/>` : ""}
+    ${palette.lit ? `<rect x="${r(x + fw * 0.1)}" y="${r(y + h * 0.05)}" width="${r(fw * 0.8)}" height="${r(h * 0.072)}" rx="${r(h * 0.008)}" fill="url(#boardGlow)"/>` : ""}
 
     <!-- windscreen, split by the centre pillar these buses all have -->
     <rect x="${r(x + fw * 0.055)}" y="${r(glassTop)}" width="${r(fw * 0.42)}" height="${r(glassH)}" rx="${r(w * 0.012)}" fill="${palette.lit ? palette.glass : palette.glassLit}"/>
     <rect x="${r(x + fw * 0.525)}" y="${r(glassTop)}" width="${r(fw * 0.42)}" height="${r(glassH)}" rx="${r(w * 0.012)}" fill="${palette.lit ? palette.glass : palette.glassLit}"/>
-    ${palette.lit ? `<rect x="${r(x + fw * 0.055)}" y="${r(glassTop)}" width="${r(fw * 0.42)}" height="${r(glassH)}" rx="${r(w * 0.012)}" fill="${palette.glassLit}" opacity="0.28"/>` : ""}
-    <!-- wipers -->
+    ${palette.lit ? `<rect x="${r(x + fw * 0.525)}" y="${r(glassTop)}" width="${r(fw * 0.42)}" height="${r(glassH)}" rx="${r(w * 0.012)}" fill="${palette.glassLit}" opacity="0.3"/>` : ""}
     <path d="M ${r(x + fw * 0.16)} ${r(glassTop + glassH * 0.94)} L ${r(x + fw * 0.34)} ${r(glassTop + glassH * 0.42)}" stroke="${palette.tyre}" stroke-width="${r(w * 0.006)}" opacity="0.55"/>
     <path d="M ${r(x + fw * 0.62)} ${r(glassTop + glassH * 0.94)} L ${r(x + fw * 0.8)} ${r(glassTop + glassH * 0.42)}" stroke="${palette.tyre}" stroke-width="${r(w * 0.006)}" opacity="0.55"/>
 
@@ -391,7 +570,7 @@ function bus(frame: Frame, palette: Palette): string {
         : ""
     }
 
-    <!-- wheels: one under the front face, one back along the flank -->
+    <!-- wheels -->
     <circle cx="${r(x + fw * 0.9)}" cy="${r(base - w * 0.05)}" r="${r(w * 0.058)}" fill="${palette.tyre}"/>
     <circle cx="${r(x + w * 0.9)}" cy="${r(base - h * 0.03 - w * 0.045)}" r="${r(w * 0.05)}" fill="${palette.tyre}"/>
   </g>`;
@@ -422,6 +601,10 @@ function defs(palette: Palette, extra = ""): string {
       <stop offset="0%" stop-color="${palette.headlampBeam}" stop-opacity="0.85"/>
       <stop offset="100%" stop-color="${palette.headlampBeam}" stop-opacity="0"/>
     </radialGradient>
+    <radialGradient id="windowGlow">
+      <stop offset="0%" stop-color="${palette.houseWindow}" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="${palette.houseWindow}" stop-opacity="0"/>
+    </radialGradient>
     <linearGradient id="beam" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="${palette.headlampBeam}" stop-opacity="0.32"/>
       <stop offset="100%" stop-color="${palette.headlampBeam}" stop-opacity="0"/>
@@ -431,18 +614,41 @@ function defs(palette: Palette, extra = ""): string {
       <stop offset="100%" stop-color="${palette.waterSheen}" stop-opacity="0"/>
     </radialGradient>
     <linearGradient id="mist" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="${palette.mist}" stop-opacity="${palette.mistOpacity}"/>
+      <stop offset="0%" stop-color="${palette.mist}" stop-opacity="0"/>
+      <stop offset="34%" stop-color="${palette.mist}" stop-opacity="${palette.mistOpacity}"/>
       <stop offset="100%" stop-color="${palette.mist}" stop-opacity="0"/>
     </linearGradient>
     ${extra}
   </defs>`;
 }
 
+/**
+ * The layers, back to front. The order *is* the depth: sky, the Ghats, a spire, the
+ * far tree line, the ground with its paddy and laterite and tar, the house behind
+ * the mid palms, the poles, the bus, and finally the undergrowth pressing in at the
+ * frame edge.
+ */
+function layers(frame: Frame, palette: Palette): string {
+  const { width, height, horizon } = frame;
+  return `${sky(frame, palette)}
+  ${ridge(frame, 11, horizon - height * 0.12, height * 0.032, palette.hillFar)}
+  ${ridge(frame, 23, horizon - height * 0.07, height * 0.024, palette.hillMid)}
+  ${spire(frame, palette)}
+  ${treeLine(frame, palette)}
+  ${ground(frame, palette)}
+  ${house(frame, palette)}
+  ${midPalms(frame, palette)}
+  ${poles(frame, palette)}
+  ${bus(frame, palette)}
+  ${foreground(frame, palette)}
+  <rect x="0" y="${r(horizon - height * 0.16)}" width="${width}" height="${r(height * 0.34)}" fill="url(#mist)"/>`;
+}
+
 /** SVG for one plate. Pure string building — no I/O, so it is trivially testable. */
 export function sceneSvg({ period, orientation }: SceneOptions): string {
   const palette = PALETTES[period];
   const frame = FRAMES[orientation];
-  const { width, height, horizon } = frame;
+  const { width, height } = frame;
 
   const vignette = `<linearGradient id="vignette" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#000" stop-opacity="0.3"/>
@@ -453,22 +659,14 @@ export function sceneSvg({ period, orientation }: SceneOptions): string {
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
   ${defs(palette, vignette)}
-  ${sky(frame, palette)}
-  ${ridge(frame, 11, horizon - height * 0.12, height * 0.032, palette.hillFar)}
-  ${ridge(frame, 23, horizon - height * 0.07, height * 0.024, palette.hillMid)}
-  ${spire(frame, palette)}
-  ${ground(frame, palette)}
-  ${palms(frame, palette)}
-  ${poles(frame, palette)}
-  ${bus(frame, palette)}
-  <rect x="0" y="${r(horizon - height * 0.05)}" width="${width}" height="${r(height * 0.2)}" fill="url(#mist)"/>
+  ${layers(frame, palette)}
   <rect width="${width}" height="${height}" fill="url(#vignette)"/>
 </svg>`;
 }
 
 /**
- * The 1200×630 plate the share card is composed on: the same world, cropped
- * wide, with the left half darkened because a title goes there.
+ * The 1200×630 plate the share card is composed on: the same world, cropped wide,
+ * with the left half darkened because a title goes there.
  */
 export function ogSvg(): string {
   const palette = PALETTES.night;
@@ -476,12 +674,12 @@ export function ogSvg(): string {
     width: 1200,
     height: 630,
     horizon: 300,
-    roadHalf: 0.6,
+    roadHalf: 0.55,
     busWidth: 0.34,
     busX: 0.74,
     busBase: 0.93,
   };
-  const { width, height, horizon } = frame;
+  const { width, height } = frame;
 
   const plate = `<linearGradient id="plate" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0%" stop-color="#03060c" stop-opacity="0.88"/>
@@ -491,15 +689,7 @@ export function ogSvg(): string {
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
   ${defs(palette, plate)}
-  ${sky(frame, palette)}
-  ${ridge(frame, 11, horizon - height * 0.15, height * 0.04, palette.hillFar)}
-  ${ridge(frame, 23, horizon - height * 0.09, height * 0.03, palette.hillMid)}
-  ${spire(frame, palette)}
-  ${ground(frame, palette)}
-  ${palms(frame, palette)}
-  ${poles(frame, palette)}
-  ${bus(frame, palette)}
-  <rect x="0" y="${r(horizon - height * 0.05)}" width="${width}" height="${r(height * 0.22)}" fill="url(#mist)"/>
+  ${layers(frame, palette)}
   <rect width="${width}" height="${height}" fill="url(#plate)"/>
 </svg>`;
 }

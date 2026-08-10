@@ -8,14 +8,15 @@
  *   2. liveness  — every ID still resolves via YouTube's oEmbed endpoint
  *   3. embedding — best-effort, and honest about being best-effort
  *
- * The third pass is the one that would matter most and the one that no longer
- * works from outside a browser. An upload can answer oEmbed with a cheerful 200
- * and still have embedding switched off, which surfaces at runtime as player
- * error 101/150 — a track nobody hears and nobody notices, because the queue
- * politely skips it. The `playableInEmbed` flag used to be readable in the watch
- * page's bootstrap JSON; as of this writing YouTube no longer serves it to a
- * plain fetch, and neither does /embed/. So this pass reports *unknown* rather
- * than pretending, and the real guard is the queue's error-skip at runtime.
+ * The third pass is the one that matters most and the one that cannot be relied
+ * on. An upload can answer oEmbed with a cheerful 200 and still have embedding
+ * switched off, which surfaces at runtime as player error 101/150 — a track
+ * nobody hears and nobody notices, because the queue politely skips it. The
+ * `playableInEmbed` flag lives in the watch page's bootstrap JSON, and whether
+ * YouTube serves that to a plain fetch is *intermittent*: the same 74 IDs came
+ * back all-unknown on one run and all-confirmed twenty minutes later. So this
+ * pass reports what it actually saw and never claims a clean bill from silence.
+ * The real guard is the queue's error-skip at runtime.
  *
  * Two things it never could catch anyway: rights-holders who allow embedding in
  * general but refuse specific referrers (a localhost origin gets a 150 the
@@ -156,8 +157,8 @@ async function main() {
   console.log(`✓ liveness: all ${tracks.length} IDs resolve via oEmbed`);
   if (unknown.length === results.length) {
     console.log(
-      "· embedding: not verifiable from here — YouTube no longer serves the " +
-        "playableInEmbed flag to a plain fetch. The queue's error-skip is the guard.",
+      "· embedding: unknown for all of them — YouTube did not serve the " +
+        "playableInEmbed flag on this run. Not a pass; the runtime skip is the guard.",
     );
   } else {
     console.log(

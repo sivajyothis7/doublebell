@@ -117,7 +117,14 @@ async function main() {
         continue;
       }
 
-      totalBytes += await encode(track.youtubeId, fetched.buffer);
+      /*
+       * Read-then-add, not `totalBytes += await encode(...)`. That form evaluates
+       * the left-hand side *before* awaiting, so six concurrent workers all read
+       * the same stale total and clobber each other — it was under-reporting the
+       * output by about 2.5×, which is the kind of wrong number you then quote.
+       */
+      const bytes = await encode(track.youtubeId, fetched.buffer);
+      totalBytes += bytes;
       bySource.set(fetched.source, (bySource.get(fetched.source) ?? 0) + 1);
     }
   };

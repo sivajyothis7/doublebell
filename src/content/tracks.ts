@@ -11,7 +11,10 @@ import type { Track } from "@/engine";
  *
  * **How it was built.** `npm run resolve-tracks` searched YouTube for every line
  * in `scripts/candidates.ts` and preferred the label and studio channels, then
- * read the film, year, composer and singer off each upload's own description.
+ * read the film, year, composer and singer off each upload's own description. A
+ * third pass mined YouTube Music's own "bus hits malayalam" search — the curated
+ * bus playlists behind it plus its auto-radio mixes, which drift into Hindi and
+ * Tamil after a dozen tracks, so only the Malayalam residue came through.
  * That pass corrected several things memory had wrong — "Devadoothar Paadi" is
  * Kaathodu Kaathoram, not Aniyathipraavu; "Onnam Ragam Paadi" is
  * Thoovanathumbikal; Thenmavin Kombathu is Berny–Ignatius, not Vidyasagar;
@@ -546,6 +549,117 @@ export const tracks: readonly Track[] = [
     year: 2019,
     composer: "Shaan Rahman",
     singer: "Vineeth Sreenivasan",
+    vibe: "mass",
+  },
+
+  {
+    youtubeId: "g--dmRDzFIg",
+    title: "Confusion Theerkkaname",
+    titleMl: "കൺഫ്യൂഷൻ തീർക്കണമേ",
+    movie: "Summer in Bethlehem",
+    year: 1998,
+    composer: "Vidyasagar",
+    singer: "M. G. Sreekumar",
+    vibe: "mass",
+  },
+  {
+    youtubeId: "7LcDxxhyXcE",
+    title: "Chanchala Drutha Patha Thalam",
+    titleMl: "ചഞ്ചല ദ്രുതപദ താളം",
+    movie: "Ishtam",
+    year: 2001,
+    composer: "Mohan Sithara",
+    singer: "K. S. Chithra",
+    vibe: "mass",
+  },
+  {
+    youtubeId: "7EqdUVLeJBg",
+    title: "Therirangum Mukile",
+    titleMl: "തേരിറങ്ങും മുകിലേ",
+    movie: "Mazhathullikkilukkam",
+    year: 2002,
+    composer: "Suresh Peters",
+    singer: "P. Jayachandran",
+    vibe: "melody",
+  },
+  {
+    youtubeId: "2C_jHO1I8X4",
+    title: "Sukhamaanee Nilaavu",
+    titleMl: "സുഖമാണീ നിലാവ്",
+    movie: "Nammal",
+    year: 2002,
+    composer: "Mohan Sithara",
+    singer: "Jyotsna & Vidhu Prathap",
+    vibe: "melody",
+  },
+  {
+    youtubeId: "O6yK8Mc6Hpw",
+    title: "Enthe Innum Vanneela",
+    titleMl: "എന്തേ ഇന്നും വന്നീലാ",
+    movie: "Gramaphone",
+    year: 2003,
+    composer: "Vidyasagar",
+    singer: "P. Jayachandran",
+    vibe: "melody",
+  },
+  {
+    youtubeId: "tcX_101zP8M",
+    title: "Kudamullakkadavil",
+    titleMl: "കുടമുല്ലക്കടവിൽ",
+    movie: "Vellithira",
+    year: 2003,
+    composer: "Alphons Joseph",
+    singer: "Sujatha Mohan",
+    vibe: "melody",
+  },
+  {
+    youtubeId: "LlGajmW_qb8",
+    title: "Maattupetti Koyilile",
+    titleMl: "മാട്ടുപ്പെട്ടി കോയിലിലെ",
+    movie: "Mayilaattam",
+    year: 2004,
+    composer: "M. Jayachandran",
+    singer: "Afsal & Chithra Iyer",
+    vibe: "nadan",
+  },
+  {
+    youtubeId: "nSSZvroFmtc",
+    title: "Kaattadi",
+    titleMl: "കാറ്റാടി",
+    movie: "Classmates",
+    year: 2006,
+    composer: "Alex Paul",
+    singer: "Vidhu Prathap",
+    vibe: "mass",
+  },
+  {
+    youtubeId: "lJXo0UjrPbg",
+    title: "Oru Venal Puzhayil",
+    titleMl: "ഒരു വേനൽ പുഴയിൽ",
+    movie: "Pranayakaalam",
+    year: 2007,
+    composer: "Ouseppachan",
+    singer: "Ranjith",
+    vibe: "melody",
+  },
+  {
+    youtubeId: "Gtrhjlhw2rk",
+    title: "Koovaram Kili Paithale",
+    titleMl: "കൂവരം കിളി പൈതലേ",
+    movie: "Banaras",
+    year: 2009,
+    composer: "M. Jayachandran",
+    singer: "Vijay Yesudas & Shweta Mohan",
+    vibe: "melody",
+  },
+  {
+    youtubeId: "RSL1-rvGmj4",
+    title: "Podipaarana",
+    titleMl: "പൊടിപാറണ",
+    movie: "Queen",
+    year: 2018,
+    composer: "Jakes Bejoy",
+    singer: "Ajaey Shravan & Kesav Vinod",
     vibe: "mass",
   },
 

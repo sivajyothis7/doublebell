@@ -1,4 +1,4 @@
-import { site } from "@/lib/site";
+import { AUTHOR, site } from "@/lib/site";
 
 /**
  * The title lockup. Real HTML text, selectable and indexable — no Malayalam on this
@@ -24,6 +24,26 @@ export default function Lockup() {
         {site.tagline}
         <span className="mx-1.5 opacity-40">·</span>
         {site.trackCount} songs
+      </p>
+      {/*
+        The heart is an emoji and not an icon on purpose: it inherits the viewer's
+        own emoji font, which is what makes it read as somebody's signature rather
+        than as part of the interface.
+      */}
+      <p className="mt-2.5 text-[0.74rem] text-[color:var(--db-cream)]/55 drop-shadow-[0_1px_4px_rgba(0,0,0,0.95)]">
+        <span aria-hidden="true">❤️</span>
+        {/* The visually-hidden phrase sits between the heart and the word, so it
+            must not also carry the space — the rendered gap comes from `{" by "}`. */}
+        <span className="sr-only">Made with love</span>
+        {" by "}
+        <a
+          href={AUTHOR.url}
+          target="_blank"
+          rel="noreferrer noopener"
+          className="underline decoration-[color:var(--db-amber)]/40 decoration-1 underline-offset-4 transition-colors hover:text-[color:var(--db-amber)] focus-visible:outline-2 focus-visible:outline-[color:var(--db-amber)] focus-visible:outline-offset-2"
+        >
+          {AUTHOR.name}
+        </a>
       </p>
     </header>
   );

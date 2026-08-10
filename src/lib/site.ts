@@ -29,6 +29,21 @@ export const site = {
 } as const;
 
 /**
+ * Where to go when you want the whole thing in your own library instead.
+ *
+ * This is YouTube Music's own "bus hits malayalam" search — the same place a good
+ * part of this playlist was mined from, and the honest answer to "can I take this
+ * with me": no, but here is the shelf it came off.
+ */
+export const YT_MUSIC_SEARCH = "https://music.youtube.com/search?q=bus+hits+malayalam";
+
+/** Whose bus this is. */
+export const AUTHOR = {
+  name: "Sivajyothis",
+  url: "https://github.com/sivajyothis7",
+} as const;
+
+/**
  * Whether the YouTube iframe is shown in the deck.
  *
  * YouTube's terms ask for a visible, unobscured player, and this site can give
