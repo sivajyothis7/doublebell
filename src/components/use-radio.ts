@@ -22,10 +22,38 @@ const TICK_MS = 250;
 
 export type Radio = ReturnType<typeof useRadio>;
 
-/** `?id={youtubeId}` — the shareable deep link. */
+/**
+ * `?id={youtubeId}` — the shareable deep link.
+ *
+ * Two things want that parameter and they want opposite behaviour. A link somebody
+ * *shared* has to open on that song, or the share is worthless. A reload has to start
+ * somewhere new, because this is a radio and the whole point is that you get a
+ * different song — and the address bar is full of an id we wrote there ourselves one
+ * track ago.
+ *
+ * Telling them apart needs one bit of memory: whichever id this tab last wrote is
+ * remembered in `sessionStorage`, and an id that matches it is ours, not a share, so
+ * it is ignored. `sessionStorage` is exactly the right lifetime — it survives a
+ * reload in this tab and does not exist in a new one, which is where a shared link
+ * gets opened.
+ */
+const WROTE_KEY = "doublebell:wrote-id";
+
 function readLinkedId(): string | undefined {
   if (typeof window === "undefined") return undefined;
-  return new URLSearchParams(window.location.search).get("id") ?? undefined;
+  const linked = new URLSearchParams(window.location.search).get("id");
+  if (!linked) return undefined;
+
+  try {
+    // Our own id from a moment ago: this is a refresh, so shuffle afresh.
+    if (window.sessionStorage.getItem(WROTE_KEY) === linked) return undefined;
+  } catch {
+    // Private mode with storage blocked: honour the id. Replaying one song on
+    // refresh is a worse bug than a broken share, but it is the safer default —
+    // a share that silently ignores its id is unfixable from the outside.
+  }
+
+  return linked;
 }
 
 /**
@@ -34,6 +62,12 @@ function readLinkedId(): string | undefined {
  * else on the web.
  */
 function writeLinkedId(youtubeId: string) {
+  try {
+    window.sessionStorage.setItem(WROTE_KEY, youtubeId);
+  } catch {
+    // Nothing to do; `readLinkedId` fails open.
+  }
+
   const url = new URL(window.location.href);
   if (url.searchParams.get("id") === youtubeId) return;
   url.searchParams.set("id", youtubeId);
@@ -65,14 +99,27 @@ export function useRadio(deckRef: RefObject<HTMLDivElement | null>) {
   const track = currentTrack(queue);
 
   /**
-   * Shuffle on mount, not during render: the seed is clock-derived, so doing it
-   * in render would make the client's first HTML disagree with the build output.
+   * The id this visit *arrived* with, captured once.
+   *
+   * It has to be read before anything writes to the URL, and exactly once — the
+   * shuffle effect below can run more than once (React's development double-invoke is
+   * the everyday case), and by its second run the address bar already holds an id
+   * this hook wrote itself. Re-reading then compares our own id against our own
+   * marker, they match, and the deep link is thrown away: a shared link silently
+   * opens on a random song. Ask the question once, before the first answer changes it.
+   *
+   * A `useState` initialiser is the right place: it runs during the first render,
+   * ahead of every effect, and returns undefined on the server where there is no URL.
+   */
+  const [arrivedId] = useState<string | undefined>(() => readLinkedId());
+
+  /**
+   * Shuffle on mount, not during render: the seed is clock-derived, so doing it in
+   * render would make the client's first HTML disagree with the build output.
    */
   useEffect(() => {
-    setQueue(
-      createQueue(tracks, { seed: Date.now() >>> 0, shuffle: true, startId: readLinkedId() }),
-    );
-  }, []);
+    setQueue(createQueue(tracks, { seed: Date.now() >>> 0, shuffle: true, startId: arrivedId }));
+  }, [arrivedId]);
 
   /** Keep the address bar pointing at whatever is playing. */
   useEffect(() => {
