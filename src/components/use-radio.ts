@@ -4,6 +4,7 @@ import { type RefObject, useCallback, useEffect, useRef, useState } from "react"
 import { createPlayer, type PlaybackStatus, type Player } from "@/adapters/youtube";
 import { tracks } from "@/content";
 import {
+  addTrack,
   createQueue,
   currentTrack,
   jumpToId,
@@ -12,9 +13,10 @@ import {
   playableCount,
   prev,
   type Queue,
+  type Track,
 } from "@/engine";
 import { ringDoubleBell } from "@/lib/bell";
-import { SELECT_TRACK_EVENT } from "./events";
+import { ADD_LINK_EVENT, SELECT_TRACK_EVENT } from "./events";
 
 const TICK_MS = 250;
 
@@ -179,6 +181,29 @@ export function useRadio(deckRef: RefObject<HTMLDivElement | null>) {
     setQueue((current) => jumpToId(current, youtubeId));
   }, []);
 
+  /**
+   * A guest track from a pasted link: plays now, and the playlist resumes right
+   * after it. It never joins the playlist, which is authored in git.
+   *
+   * Already resolved by the time it gets here — the sheet does that, so anything
+   * arriving on this event is something YouTube confirmed it will serve.
+   */
+  const addLink = useCallback((guest: Track) => {
+    if (!startedRef.current) ringDoubleBell();
+    startedRef.current = true;
+    setStarted(true);
+    setQueue((current) => addTrack(current, guest));
+  }, []);
+
+  useEffect(() => {
+    const onAdd = (event: Event) => {
+      const guest = (event as CustomEvent<Track>).detail;
+      if (guest?.youtubeId) addLink(guest);
+    };
+    window.addEventListener(ADD_LINK_EVENT, onAdd);
+    return () => window.removeEventListener(ADD_LINK_EVENT, onAdd);
+  }, [addLink]);
+
   /** Search lives in the header; the queue lives here. */
   useEffect(() => {
     const onSelect = (event: Event) => {
@@ -240,6 +265,7 @@ export function useRadio(deckRef: RefObject<HTMLDivElement | null>) {
     skipNext,
     skipPrev,
     playTrack,
+    addLink,
     seek,
     setScrubbing,
   };

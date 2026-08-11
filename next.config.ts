@@ -7,12 +7,19 @@ const nextConfig: NextConfig = {
    * everything under it — which it then warns about and ignores.
    */
   turbopack: { root: import.meta.dirname },
-  // The whole site is HTML/CSS/JS on a CDN. There is no backend: the playlist is
-  // a TypeScript file in git and playback goes straight to YouTube.
-  output: "export",
+  /*
+   * Not a static export any more.
+   *
+   * It was, and the playlist half still is: the page is prerendered, the plates and
+   * covers are files on disk, and playback goes straight to YouTube. What broke the
+   * export is in-site search — `/api/search` has to run somewhere, because YouTube's
+   * results page does not answer cross-origin. One route handler, everything else
+   * still static.
+   */
   images: {
-    // A static export has no image optimiser. The backdrop matrix is pre-encoded
-    // by `npm run art` and the covers by `npm run covers`.
+    // The plates are pre-encoded by `npm run art` and the covers by `npm run
+    // covers`, both at the exact sizes the page asks for, so there is nothing for an
+    // optimiser to do except add a hop.
     unoptimized: true,
   },
 };

@@ -130,6 +130,26 @@ export function setShuffle(queue: Queue, shuffled: boolean, seed = queue.seed): 
   return playing ? jumpToId(rebuilt, playing.youtubeId) : rebuilt;
 }
 
+/**
+ * Adds a track that is not on the playlist and moves the cursor onto it — a link
+ * somebody pasted.
+ *
+ * It goes on the end of `tracks` and *immediately after the cursor* in `order`, so
+ * the queue carries on where it was once the guest track finishes rather than
+ * jumping to whatever happened to be appended last. Passing an ID already in the
+ * queue is a jump, not a duplicate.
+ */
+export function addTrack(queue: Queue, track: Track): Queue {
+  const existing = queue.tracks.findIndex((entry) => entry.youtubeId === track.youtubeId);
+  if (existing !== -1) return jumpToId(queue, track.youtubeId);
+
+  const index = queue.tracks.length;
+  const at = queue.position < 0 ? 0 : queue.position + 1;
+  const order = [...queue.order.slice(0, at), index, ...queue.order.slice(at)];
+
+  return { ...queue, tracks: [...queue.tracks, track], order, position: at };
+}
+
 /** The track that would play next, for prefetching its cover. */
 export function peekNext(queue: Queue): Track | null {
   return currentTrack(next(queue));

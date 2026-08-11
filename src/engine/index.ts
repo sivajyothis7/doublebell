@@ -11,6 +11,7 @@ export {
 } from "./backdrop";
 export { FIXTURE_TRACKS, makeTrack } from "./fixtures";
 export { formatTime, progressRatio } from "./format";
+export { cleanUploadTitle, looksLikeLink, parseYoutubeId, youtubeSearchUrl } from "./link";
 export {
   COVER_FORMAT,
   COVER_SIZE,
@@ -32,6 +33,7 @@ export {
   resolvePeriod,
 } from "./period";
 export {
+  addTrack,
   type CreateQueueOptions,
   createQueue,
   currentTrack,

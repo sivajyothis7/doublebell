@@ -2,7 +2,7 @@
 
 import { Pause, Play, SkipBack, SkipForward } from "lucide-react";
 import { type RefObject, useId, useState } from "react";
-import { COVER_SIZE, coverUrl, formatTime, progressRatio, type Track } from "@/engine";
+import { COVER_SIZE, coverUrl, formatTime, progressRatio, thumbnailUrl, type Track } from "@/engine";
 import { SHOW_PLAYER } from "@/lib/site";
 import type { Radio } from "./use-radio";
 
@@ -69,7 +69,13 @@ function Record({ track, spinning }: { track: Track | null; spinning: boolean })
         // Keyed so a new track always gets a fresh element, and a previously
         // failed one retries rather than inheriting the broken state.
         key={track.youtubeId}
-        src={coverUrl(track.youtubeId)}
+        /*
+         * A guest track from a pasted link has no baked cover — `npm run covers`
+         * only ever saw the playlist — so it reads from ytimg. Without this the
+         * disc silently falls back to the blank-vinyl placeholder for exactly the
+         * track the listener just chose.
+         */
+        src={track.adhoc ? thumbnailUrl(track.youtubeId, "mqdefault") : coverUrl(track.youtubeId)}
         alt={`${track.title} — ${track.movie}`}
         width={COVER_SIZE}
         height={COVER_SIZE}
@@ -151,17 +157,37 @@ function Meta({ track }: { track: Track | null }) {
         375px phone that is the transliteration and the film, nothing dangling
         behind an ellipsis.
       */}
+      {/*
+        A guest track — searched for on YouTube, or pasted as a link — has one piece
+        of provenance, the channel that uploaded it, so it gets said once. An authored track has a film, a year
+        and a singer, added back a field at a time as the screen widens, so each
+        breakpoint shows what fits whole rather than truncating a longer line.
+      */}
       <p className="truncate text-[0.66rem] text-[color:var(--db-muted)] sm:text-[0.78rem]">
-        {track.title}
-        <span className="text-[color:var(--db-muted)]/70">
-          {" · "}
-          {track.movie}
-          {track.year !== undefined && <span className="hidden sm:inline"> · {track.year}</span>}
-        </span>
-        <span className="hidden text-[color:var(--db-muted)]/70 lg:inline">
-          {" · "}
-          {track.singer}
-        </span>
+        {track.adhoc ? (
+          <>
+            <span className="text-[color:var(--db-amber)]/75">from YouTube</span>
+            <span className="text-[color:var(--db-muted)]/70">
+              {" · "}
+              {track.movie}
+            </span>
+          </>
+        ) : (
+          <>
+            {track.title}
+            <span className="text-[color:var(--db-muted)]/70">
+              {" · "}
+              {track.movie}
+              {track.year !== undefined && (
+                <span className="hidden sm:inline"> · {track.year}</span>
+              )}
+            </span>
+            <span className="hidden text-[color:var(--db-muted)]/70 lg:inline">
+              {" · "}
+              {track.singer}
+            </span>
+          </>
+        )}
       </p>
     </div>
   );

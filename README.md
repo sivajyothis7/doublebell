@@ -26,8 +26,10 @@ its own curation and its own bell.
   and the player is visible in the deck rather than hidden, which is what YouTube's
   terms ask for. It is dressed as the screen bolted above the windscreen of every
   Kerala tourist bus.
-- **No backend.** The playlist is a TypeScript file in git; the whole site is a
-  static export.
+- **Search YouTube from inside the page** and any result plays in this deck — no
+  redirect, no API key. Or paste a YouTube link and it plays as a guest in the queue.
+- **Almost no backend.** The playlist is a TypeScript file in git and the page is
+  prerendered; the one server-side thing is `/api/search`.
 - **Four painted plates** — morning and night, landscape and portrait — drawn as
   SVG in `scripts/art/` and rasterised at build time. No photographs, no generated
   images, and no real operator's livery or name.
@@ -46,11 +48,12 @@ npm run dev          # http://localhost:3002
 ## Layout
 
 ```
-src/engine/          PURE. Queue, seeded shuffle, day/night resolver, search,
-                     route board, track model. No network, no DOM, no framework.
-                     80 tests, all offline.
-src/adapters/youtube The IFrame Player API wrapper. The only place that knows
-                     YouTube exists as a player.
+src/engine/          PURE. Queue, seeded shuffle, day/night resolver, playlist
+                     search, link parsing, route board, track model. No network,
+                     no DOM, no framework.
+src/adapters/youtube The IFrame Player API wrapper, the oEmbed lookup, and the
+                     search-page parser. The only place that knows YouTube exists.
+src/app/api/search   The one route handler: YouTube search, server-side.
 src/content/         tracks.ts — the playlist. This file is the product.
 src/components/      The page. Backdrop, lockup, route board, deck, search.
 scripts/art/         The artwork, as code.
@@ -58,7 +61,23 @@ scripts/             Curation and build tooling (below).
 ```
 
 The engine/renderer split is absolute: `src/engine` runs offline against fixtures,
-and every YouTube specific lives behind the adapter seam.
+and every YouTube specific lives behind the adapter seam. 107 tests, all offline —
+including the search-page parser, which is the most fragile thing here and so is
+tested against a synthetic blob rather than a live request.
+
+## Searching YouTube without an API key
+
+`/api/search` reads YouTube's own results page and walks the `ytInitialData` blob in
+it. That is a deliberate trade against the official Data API, where `search.list`
+costs 100 of a 10,000-unit daily quota — a hundred searches a day for the entire
+site, after which every visitor gets an error. A key would also have to live
+somewhere, and in a static bundle that means published.
+
+The cost is fragility: it is YouTube's private shape and they can change it. So the
+walk is entirely optional-chained (a shape change yields zero results, never a 500),
+the parser is unit-tested, the route caches at the edge for an hour per query, and
+the UI treats "no results" and "parser broke" identically — the playlist and the
+paste-a-link box keep working regardless.
 
 ## Scripts
 

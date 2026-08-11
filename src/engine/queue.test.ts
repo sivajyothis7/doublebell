@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { FIXTURE_TRACKS, makeTrack } from "./fixtures";
 import {
+  addTrack,
   createQueue,
   currentTrack,
   jumpToId,
@@ -131,5 +132,39 @@ describe("jumpToId", () => {
     const queue = unshuffled();
     expect(currentTrack(jumpToId(queue, "aaaaaaaaaa3"))?.youtubeId).toBe("aaaaaaaaaa3");
     expect(jumpToId(queue, "zzzzzzzzzzz")).toBe(queue);
+  });
+});
+
+describe("addTrack", () => {
+  const guest = makeTrack({ youtubeId: "guestguest1", title: "From a link", adhoc: true });
+
+  it("plays the guest track immediately", () => {
+    const queue = addTrack(unshuffled(), guest);
+    expect(currentTrack(queue)?.youtubeId).toBe("guestguest1");
+  });
+
+  it("resumes the playlist where it was, rather than at the end", () => {
+    // Sitting on track 2, a guest arrives; after it, track 3 — not whatever is last.
+    let queue = next(next(unshuffled()));
+    queue = addTrack(queue, guest);
+    expect(currentTrack(next(queue))?.youtubeId).toBe("aaaaaaaaaa3");
+  });
+
+  it("keeps every original track playable", () => {
+    const queue = addTrack(unshuffled(), guest);
+    expect(queue.tracks).toHaveLength(7);
+    expect(playableCount(queue)).toBe(7);
+  });
+
+  it("treats a track already in the queue as a jump, not a duplicate", () => {
+    const queue = addTrack(unshuffled(), makeTrack({ youtubeId: "aaaaaaaaaa4" }));
+    expect(queue.tracks).toHaveLength(6);
+    expect(currentTrack(queue)?.youtubeId).toBe("aaaaaaaaaa4");
+  });
+
+  it("works on an empty playlist", () => {
+    const queue = addTrack(createQueue([], { shuffle: false }), guest);
+    expect(currentTrack(queue)?.youtubeId).toBe("guestguest1");
+    expect(playableCount(queue)).toBe(1);
   });
 });

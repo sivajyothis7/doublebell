@@ -43,6 +43,14 @@ export type Track = {
    */
   singer: string;
   vibe: Vibe;
+  /**
+   * Set on a guest track — one found through the in-site YouTube search or pasted as
+   * a link — and never on an authored one. It exists so the UI can label it honestly
+   * ("from YouTube") and pull cover art from ytimg instead of `/covers`, where no
+   * file was ever baked for it. `validateTracks` is a build-time check over the
+   * authored list, which guests never join, so nothing has to be relaxed for them.
+   */
+  adhoc?: true;
 };
 
 const YOUTUBE_ID = /^[A-Za-z0-9_-]{11}$/;
