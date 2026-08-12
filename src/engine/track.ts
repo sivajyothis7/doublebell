@@ -4,7 +4,7 @@
  * network.
  */
 
-export type Era = "80s" | "90s" | "2000s" | "2010s";
+export type Era = "80s" | "90s" | "2000s" | "2010s" | "2020s";
 
 /**
  * What kind of song it is, in the terms a Kerala bus actually sorts them into:
@@ -35,13 +35,23 @@ export type Track = {
    * there is one and the era when there is not.
    */
   year?: number;
-  composer: string;
   /**
-   * Required, unlike the reference product's model. A Malayali names the singer
-   * before the composer — "Yesudas paattu", "Manichettan paattu" — so leaving
-   * it optional would lose the field people actually search by.
+   * Optional, like `year`. Plenty of നാടൻ and മാപ്പിള album tracks have no composer
+   * credited anywhere findable — the song is older than the recording and belongs to
+   * whoever is singing it. Requiring one only ever meant dropping the song.
    */
-  singer: string;
+  composer?: string;
+  /**
+   * A Malayali names the singer before the composer — "Yesudas paattu", "Manichettan
+   * paattu" — so this is the field people actually search by, and it is filled
+   * wherever it is known.
+   *
+   * Optional all the same. It was required, on exactly that argument, and the effect
+   * was that real bus songs could not be added because nobody had written their
+   * credits down anywhere findable. A song with an unknown singer is still the song;
+   * a playlist that refuses it is just shorter.
+   */
+  singer?: string;
   vibe: Vibe;
   /**
    * Set on a guest track — one found through the in-site YouTube search or pasted as
@@ -77,17 +87,21 @@ export function eraForYear(year: number): Era {
   if (year < 1990) return "80s";
   if (year < 2000) return "90s";
   if (year < 2010) return "2000s";
-  return "2010s";
+  if (year < 2020) return "2010s";
+  return "2020s";
 }
 
 /**
- * Era scope. The floor is 1980 because the Ilaiyaraaja- and Johnson-era songs
- * that opened those routes never stopped playing on them; the ceiling is 2019
- * because that is where the sound this page is about ends — after it, the bus
- * speaker is a Bluetooth speaker and the song is whatever is trending.
+ * Era scope, and it is a sanity check rather than a taste rule.
+ *
+ * It used to be 1980–2019, justified as "where the sound this page is about ends".
+ * That was a taste rule wearing a data validation, and it was wrong twice over: the
+ * songs that opened these routes are older than 1980, and a bus today plays whatever
+ * came out this month. The range now exists only to catch a mis-parsed year — a "1965"
+ * scraped out of a description is a bug, not a discovery.
  */
-export const EARLIEST_YEAR = 1980;
-export const LATEST_YEAR = 2019;
+export const EARLIEST_YEAR = 1975;
+export const LATEST_YEAR = 2027;
 
 export type TrackProblem = {
   index: number;
@@ -127,7 +141,9 @@ export function validateTracks(tracks: readonly Track[]): TrackProblem[] {
     if (track.composer !== undefined && track.composer.trim() === "") {
       at("composer", "present but blank — omit it instead");
     }
-    if (track.singer.trim() === "") at("singer", "missing");
+    if (track.singer !== undefined && track.singer.trim() === "") {
+      at("singer", "present but blank — omit it instead");
+    }
 
     if (
       track.year !== undefined &&

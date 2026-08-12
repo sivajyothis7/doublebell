@@ -16,12 +16,12 @@ its own curation and its own bell.
 
 ## What it is
 
-- **82 curated songs, all from one place**: the YouTube search
-  [`bus hits malayalam`](https://www.youtube.com/results?search_query=bus+hits+malayalam)
-  and the playlists it surfaces. `npm run mine-search` ranks that pool by reading
-  each upload's own metadata; the site links back to the search. Every ID is a
-  label, studio or artist-channel upload wherever one exists — those are the ones
-  that stay up.
+- **209 curated songs**: the YouTube search
+  harvested from a wide sweep of YouTube searches — `bus hits malayalam` first, then
+  നാടൻ, മാപ്പിള, mass, tempo, Onam and decade sweeps. `npm run mine-search` ranks the
+  pool from each upload's own metadata; `npm run from-pool` derives entries offline
+  from upload titles once YouTube starts rate-limiting the per-video pass. Every ID
+  resolves and is checked before it ships.
 - **No hosted audio, ever.** Playback runs through the YouTube IFrame Player API,
   and the player is visible in the deck rather than hidden, which is what YouTube's
   terms ask for. It is dressed as the screen bolted above the windscreen of every
@@ -127,6 +127,21 @@ To deploy by hand (a token with access to the `sivajyothis7s-projects` scope):
 ```bash
 vercel deploy --prod --yes --scope sivajyothis7s-projects
 ```
+
+## What is *not* a rule here
+
+Earlier versions of this playlist were shrunk by gates that were invented in this
+repo rather than asked for, and it is worth naming them so they do not creep back:
+
+- a **2019 ceiling**, justified as "where the sound ends". A bus today plays whatever
+  came out this month. The range is now 1975–2027 and only catches a mis-parsed year.
+- a **required composer and singer**. Plenty of നാടൻ and മാപ്പിള album tracks have no
+  credits written down anywhere findable. Requiring them only ever dropped the song.
+- a **single-source rule**, which threw away 68 already-verified songs when the list
+  was rebuilt from one search. Restored.
+
+The one bar that is real: it has to be a Malayalam song that actually plays. Dead and
+un-embeddable IDs are silent gaps in a radio, so `npm run check-tracks` gates them.
 
 ## The visitor count
 

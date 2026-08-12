@@ -356,7 +356,8 @@ export default function SearchSheet({ className = "" }: { className?: string }) 
                             </span>
                             <span className="truncate text-[0.72rem] opacity-60">
                               {track.title} · {track.movie}
-                              {track.year !== undefined ? ` · ${track.year}` : ""} · {track.singer}
+                              {track.year !== undefined ? ` · ${track.year}` : ""}
+                              {track.singer !== undefined ? ` · ${track.singer}` : ""}
                             </span>
                           </span>
                           {matchedOn !== "title" && matchedOn !== "titleMl" && (

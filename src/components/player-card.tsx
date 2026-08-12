@@ -182,10 +182,12 @@ function Meta({ track }: { track: Track | null }) {
                 <span className="hidden sm:inline"> · {track.year}</span>
               )}
             </span>
-            <span className="hidden text-[color:var(--db-muted)]/70 lg:inline">
-              {" · "}
-              {track.singer}
-            </span>
+            {track.singer !== undefined && (
+              <span className="hidden text-[color:var(--db-muted)]/70 lg:inline">
+                {" · "}
+                {track.singer}
+              </span>
+            )}
           </>
         )}
       </p>

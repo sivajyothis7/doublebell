@@ -99,7 +99,26 @@ describe("validateTracks", () => {
   });
 
   it("still rejects a year that is present and out of scope", () => {
-    const problems = validateTracks([makeTrack({ youtubeId: "aaaaaaaaaa1", year: 2024 })]);
-    expect(problems[0]?.field).toBe("year");
+    // Asserted against the constants, not against literals: the scope is a sanity
+    // check that has moved before and will move again, and a test that hardcodes it
+    // fails for the wrong reason every time it does.
+    for (const year of [EARLIEST_YEAR - 1, LATEST_YEAR + 1]) {
+      const problems = validateTracks([makeTrack({ youtubeId: "aaaaaaaaaa1", year })]);
+      expect(problems[0]?.field).toBe("year");
+    }
+  });
+
+  it("accepts a track with no composer or singer credited", () => {
+    // Both were required once. That did not improve the data, it only ever dropped
+    // songs whose credits are not written down anywhere findable.
+    const bare = makeTrack({ youtubeId: "aaaaaaaaaa1" });
+    delete (bare as { composer?: string }).composer;
+    delete (bare as { singer?: string }).singer;
+    expect(validateTracks([bare])).toEqual([]);
+  });
+
+  it("still rejects a credit that is present but blank", () => {
+    const blank = validateTracks([makeTrack({ youtubeId: "aaaaaaaaaa1", singer: "  " })]);
+    expect(blank[0]?.field).toBe("singer");
   });
 });
