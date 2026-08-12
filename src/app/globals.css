@@ -472,3 +472,41 @@ dialog.sheet::backdrop {
     scroll-behavior: auto !important;
   }
 }
+
+/* ---------------------------------------------------------------- presence */
+
+/*
+ * The live dot. A ring expanding out of it reads as a signal arriving, which is the
+ * point — a static dot could be a decoration, and this number is a measurement. The
+ * ring is a pseudo-element so only it animates and the dot itself stays crisp.
+ */
+.pulse-dot {
+  position: relative;
+  display: inline-block;
+  width: 0.44rem;
+  height: 0.44rem;
+  border-radius: 999px;
+  background: oklch(0.78 0.17 150);
+  box-shadow: 0 0 8px oklch(0.78 0.17 150 / 0.9);
+}
+
+.pulse-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: oklch(0.78 0.17 150);
+  animation: presence-pulse 2.6s cubic-bezier(0.24, 0.6, 0.36, 1) infinite;
+}
+
+@keyframes presence-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  70%,
+  100% {
+    transform: scale(2.9);
+    opacity: 0;
+  }
+}

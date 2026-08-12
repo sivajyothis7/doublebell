@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import LinkOut from "./link-out";
+import Presence from "./presence";
 import RouteBoard from "./route-board";
 import SearchSheet from "./search-sheet";
 import SettingsSheet from "./settings-sheet";
@@ -19,7 +20,7 @@ function istClock(now: Date): string {
 }
 
 /**
- * Clock, route board, search and settings.
+ * Clock, live count, route board, search and settings.
  *
  * The clock renders empty on the server and fills on mount: a static export is
  * built once, so anything time-dependent has to arrive after hydration or the
@@ -38,12 +39,17 @@ export default function TopBar() {
     // Three columns rather than `justify-between`: the clock and the controls are
     // different widths, so space-between would leave the board off-centre.
     <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 px-3 py-3.5 sm:gap-4 sm:px-7 sm:py-5">
-      <span
-        className="justify-self-start font-mono text-[0.7rem] text-[color:var(--db-cream)]/70 tabular-nums drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)] sm:text-[0.8rem]"
-        suppressHydrationWarning
-      >
-        {now ? istClock(now) : " "}
-      </span>
+      {/* The clock and the count both arrive after hydration, so they share a
+          column and neither shifts the board when it appears. */}
+      <div className="flex min-w-0 items-center gap-2.5 justify-self-start sm:gap-3.5">
+        <span
+          className="font-mono text-[0.7rem] text-[color:var(--db-cream)]/70 tabular-nums drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)] sm:text-[0.8rem]"
+          suppressHydrationWarning
+        >
+          {now ? istClock(now) : " "}
+        </span>
+        <Presence />
+      </div>
 
       <RouteBoard />
 

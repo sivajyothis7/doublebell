@@ -57,6 +57,13 @@ export {
   SERVICE_CLASSES,
   type ServiceClass,
 } from "./route";
+export {
+  isValidTabId,
+  PRESENCE_MAX_TRACKED,
+  PRESENCE_WINDOW_MS,
+  pruneStale,
+  recordBeat,
+} from "./presence";
 export { normalize, type SearchResult, searchTracks } from "./search";
 export { createRandom, shuffle } from "./shuffle";
 export {

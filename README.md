@@ -16,7 +16,7 @@ its own curation and its own bell.
 
 ## What it is
 
-- **49 curated songs, all from one place**: the YouTube search
+- **82 curated songs, all from one place**: the YouTube search
   [`bus hits malayalam`](https://www.youtube.com/results?search_query=bus+hits+malayalam)
   and the playlists it surfaces. `npm run mine-search` ranks that pool by reading
   each upload's own metadata; the site links back to the search. Every ID is a
@@ -26,6 +26,7 @@ its own curation and its own bell.
   and the player is visible in the deck rather than hidden, which is what YouTube's
   terms ask for. It is dressed as the screen bolted above the windscreen of every
   Kerala tourist bus.
+- **A live count of who else is on the bus** — real heartbeats, not a curve.
 - **Search YouTube from inside the page** and any result plays in this deck — no
   redirect, no API key. Or paste a YouTube link and it plays as a guest in the queue.
 - **Almost no backend.** The playlist is a TypeScript file in git and the page is
@@ -53,7 +54,8 @@ src/engine/          PURE. Queue, seeded shuffle, day/night resolver, playlist
                      no DOM, no framework.
 src/adapters/youtube The IFrame Player API wrapper, the oEmbed lookup, and the
                      search-page parser. The only place that knows YouTube exists.
-src/app/api/search   The one route handler: YouTube search, server-side.
+src/app/api/search   YouTube search, server-side.
+src/app/api/presence The live count. In-memory sliding window; see the caveat below.
 src/content/         tracks.ts — the playlist. This file is the product.
 src/components/      The page. Backdrop, lockup, route board, deck, search.
 scripts/art/         The artwork, as code.
@@ -125,6 +127,23 @@ To deploy by hand (a token with access to the `sivajyothis7s-projects` scope):
 ```bash
 vercel deploy --prod --yes --scope sivajyothis7s-projects
 ```
+
+## The visitor count
+
+`/api/presence` counts pages that sent a heartbeat in the last 60 seconds. The number
+is a real measurement — but it lives in one lambda's memory, because this project has
+no shared store. While Vercel keeps a single instance warm, which on a site this size
+is nearly always, the count is simply correct. If traffic ever warrants a second
+instance, each counts only its own visitors, so the figure **undercounts**. It never
+invents anybody.
+
+That distinction is the point. The format this site borrows from shows a fabricated
+listener count, and an early version of this page did too before it was cut. A number
+that might be low is a measurement; a number nobody is counting is a lie.
+
+To make it exact: add a Redis/KV store in the Vercel dashboard and swap the `Map` in
+that route for `SETEX`/`SCAN`. The window and ceiling rules already live in
+`src/engine/presence.ts`, pure and unit-tested, and would not change.
 
 ## Caching
 

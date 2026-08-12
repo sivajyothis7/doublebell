@@ -25,7 +25,7 @@
  */
 
 import { execFile } from "node:child_process";
-import { readFile, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { promisify } from "node:util";
 
@@ -34,8 +34,19 @@ const run = promisify(execFile);
 const ROOT = join(dirname(new URL(import.meta.url).pathname), "..");
 const POOL = join(ROOT, ".harvest/ytpool.txt");
 const OUT = join(ROOT, ".harvest/mined.json");
+/**
+ * One JSON file per inspected video.
+ *
+ * Without this the script is not resumable, and it needs to be: YouTube rate-limits
+ * a few hundred metadata fetches in, so the first run over an 865-video pool came
+ * back with 267 inspected and the rest silently empty. Re-running redid all 267 and
+ * hit the same wall. Now a re-run only asks about what it has never seen.
+ */
+const CACHE = join(ROOT, ".harvest/inspected");
 
-const CONCURRENCY = 6;
+const CONCURRENCY = 4;
+/** Small pause between fetches. Politeness, and it is what keeps the wall further off. */
+const THROTTLE_MS = 250;
 /** A single film song. Below is a clip, above is a jukebox. */
 const MIN_SECONDS = 100;
 const MAX_SECONDS = 600;
@@ -145,6 +156,8 @@ const FIELDS: { key: "film" | "composer" | "singer"; re: RegExp }[] = [
   { key: "composer", re: /(?:^|\n)\s*(?:music|composer|music director)\s*[:\-–]\s*(.+)/i },
   { key: "singer", re: /(?:^|\n)\s*(?:singer|singers|vocals|sung by)\s*[:\-–]\s*(.+)/i },
 ];
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 /** Everything yt-dlp will tell us about one upload, in one call. */
 async function inspect(entry: PoolEntry): Promise<Mined | null> {
@@ -259,32 +272,57 @@ async function main() {
   const entries = await pool();
   console.log(`\n${entries.length} single-song candidates in the pool\n`);
 
+  await mkdir(CACHE, { recursive: true });
+  const cached = new Set((await readdir(CACHE)).map((name) => name.replace(/\.json$/, "")));
+  const todo = entries.filter((entry) => !cached.has(entry.id));
+  console.log(`${cached.size} already inspected · ${todo.length} to go\n`);
+
   const results: Mined[] = [];
   let cursor = 0;
   let done = 0;
+  let failed = 0;
 
   const worker = async () => {
-    while (cursor < entries.length) {
-      const entry = entries[cursor++];
+    while (cursor < todo.length) {
+      const entry = todo[cursor++];
       if (!entry) continue;
       const mined = await inspect(entry);
       done++;
-      if (mined) results.push(mined);
-      if (done % 40 === 0) console.log(`  ${done}/${entries.length}`);
+      if (mined) {
+        // Cache the answer, not the attempt: a failed fetch stays un-cached so the
+        // next run asks again rather than remembering a hole.
+        await writeFile(join(CACHE, `${entry.id}.json`), JSON.stringify(mined));
+        results.push(mined);
+      } else {
+        failed++;
+      }
+      if (done % 40 === 0) {
+        console.log(`  ${done}/${todo.length} (${failed} no answer)`);
+      }
+      await sleep(THROTTLE_MS);
     }
   };
 
   await Promise.all(Array.from({ length: CONCURRENCY }, worker));
 
-  results.sort((a, b) => b.score - a.score);
-  await writeFile(OUT, `${JSON.stringify(results, null, 2)}\n`);
+  // Everything ever inspected, this run and every previous one.
+  const all: Mined[] = [];
+  for (const name of await readdir(CACHE)) {
+    if (!name.endsWith(".json")) continue;
+    all.push(JSON.parse(await readFile(join(CACHE, name), "utf8")) as Mined);
+  }
 
-  const keep = results.filter((entry) => entry.verdict === "keep");
-  const dropped = results.filter((entry) => entry.verdict.startsWith("dropped"));
+  all.sort((a, b) => b.score - a.score);
+  await writeFile(OUT, `${JSON.stringify(all, null, 2)}\n`);
+
+  const keep = all.filter((entry) => entry.verdict === "keep");
+  const dropped = all.filter((entry) => entry.verdict.startsWith("dropped"));
 
   console.log(
-    `\n✓ ${keep.length} keep · ${results.length - keep.length - dropped.length} thin · ` +
-      `${dropped.length} dropped → ${OUT}\n`,
+    `\n✓ ${all.length} inspected in total: ${keep.length} keep · ` +
+      `${all.length - keep.length - dropped.length} thin · ${dropped.length} dropped` +
+      (failed ? `\n  ${failed} gave no answer this run — re-run to retry just those` : "") +
+      `\n  → ${OUT}\n`,
   );
 }
 
