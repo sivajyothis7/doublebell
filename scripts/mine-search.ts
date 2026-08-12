@@ -16,8 +16,10 @@
  *  · **not-Malayalam** — the same search returns Tamil and Hindi, because the
  *    playlists it surfaces drift.
  *  · **not-the-song** — remixes, DJ edits, covers, karaoke, status clips.
- *  · **metadata-less** — an upload whose title and description cannot yield a film
- *    and a singer is not a track this playlist can honestly carry.
+ *  · **unidentifiable** — an upload whose title cannot even yield a song name. Note
+ *    what is *not* on this list any more: a missing film, composer or year no longer
+ *    disqualifies anything. That bar was invented here and it threw away real bus
+ *    songs whose credits simply are not written down anywhere findable.
  *
  * Output: `.harvest/mined.json`, ranked best-first, for a human to promote into
  * `src/content/tracks.ts`. Nothing here writes the playlist: Malayalam titles are
@@ -264,7 +266,12 @@ async function inspect(entry: PoolEntry): Promise<Mined | null> {
     (mined.trackName ? 6 : 0) +
     Math.min(10, Math.log10(Math.max(mined.views, 1)));
 
-  mined.verdict = mined.score >= 45 ? "keep" : "thin: metadata or source too weak";
+  /*
+   * The bar is "is this a Malayalam song that will play", not "does it come with a
+   * full set of credits". 45 was too high: it wanted a film *and* a singer *and* a
+   * year, and 206 entries fell short of that while being perfectly good songs.
+   */
+  mined.verdict = mined.score >= 22 ? "keep" : "thin: could not identify the song";
   return mined;
 }
 

@@ -82,7 +82,10 @@ export function searchTracks(tracks: readonly Track[], query: string, limit = 40
     let best: { score: number; matchedOn: SearchResult["matchedOn"] } | null = null;
 
     for (const { key, weight } of FIELDS) {
-      const kind = scoreField(track[key], needle);
+      // `composer` is optional on a Track; a song with none simply cannot match on it.
+      const value = track[key];
+      if (value === undefined) continue;
+      const kind = scoreField(value, needle);
       if (kind === null) continue;
       // Field rank outweighs match quality: a singer whose name merely contains
       // the query should never outrank a title that starts with it.

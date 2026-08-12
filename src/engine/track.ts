@@ -123,7 +123,10 @@ export function validateTracks(tracks: readonly Track[]): TrackProblem[] {
       at("titleMl", `"${track.titleMl}" contains no Malayalam script`);
     }
     if (track.movie.trim() === "") at("movie", "missing");
-    if (track.composer.trim() === "") at("composer", "missing");
+    // A composer field that exists must say something; absent is fine.
+    if (track.composer !== undefined && track.composer.trim() === "") {
+      at("composer", "present but blank — omit it instead");
+    }
     if (track.singer.trim() === "") at("singer", "missing");
 
     if (
