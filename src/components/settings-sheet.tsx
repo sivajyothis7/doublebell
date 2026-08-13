@@ -1,10 +1,11 @@
 "use client";
 
-import { Bell, BellOff, Check, Clock, Moon, Settings, Sun } from "lucide-react";
+import { Bell, BellOff, Check, Clock, Moon, Settings, Smartphone, Sun } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { PERIOD_STORAGE_KEY, type PeriodMode, resolveMode } from "@/engine";
 import { bellEnabled, ringDoubleBell, setBellEnabled } from "@/lib/bell";
-import { PERIOD_EVENT } from "./events";
+import { AWAKE_EVENT, PERIOD_EVENT } from "./events";
+import { readAwake, writeAwake } from "./settings-store";
 
 const OPTIONS: { mode: PeriodMode; label: string; hint: string; Icon: typeof Sun }[] = [
   { mode: "system", label: "Auto", hint: "Follows the clock in Kerala", Icon: Clock },
@@ -22,7 +23,7 @@ export function readMode(): PeriodMode {
 }
 
 /**
- * Settings: the day/night switch and the bell.
+ * Settings: the day/night switch, the bell, and the screen lock.
  *
  * The blocking script in <head> has already applied the stored mode before first
  * paint; this only keeps it in step afterwards. Writing `data-period` on <html> is
@@ -33,11 +34,20 @@ export default function SettingsSheet({ className = "" }: { className?: string }
   const dialogRef = useRef<HTMLDialogElement | null>(null);
   const [mode, setMode] = useState<PeriodMode>("system");
   const [bell, setBell] = useState(true);
+  const [awake, setAwake] = useState(true);
 
   useEffect(() => {
     setMode(readMode());
     setBell(bellEnabled());
+    setAwake(readAwake());
   }, []);
+
+  const toggleAwake = () => {
+    const next = !awake;
+    setAwake(next);
+    writeAwake(next);
+    window.dispatchEvent(new CustomEvent(AWAKE_EVENT));
+  };
 
   /** `system` has to be re-resolved as the clock crosses 05:00 and 18:00 IST. */
   useEffect(() => {
@@ -162,6 +172,47 @@ export default function SettingsSheet({ className = "" }: { className?: string }
             </span>
             {bell && <Check className="size-4 shrink-0 text-[color:var(--db-amber)]" />}
           </button>
+
+          <button
+            type="button"
+            onClick={toggleAwake}
+            aria-pressed={awake}
+            className="flex w-full items-center gap-3.5 rounded-2xl px-3.5 py-3 text-left transition-colors hover:bg-[color:oklch(0.96_0.017_90/0.07)] focus-visible:outline-2 focus-visible:outline-[color:var(--db-amber)] focus-visible:outline-offset-2"
+          >
+            <span
+              className={`grid size-9 shrink-0 place-items-center rounded-full ${
+                awake
+                  ? "bg-[color:var(--db-amber)] text-[color:var(--db-night-deep)]"
+                  : "bg-[color:oklch(0.96_0.017_90/0.1)] text-[color:var(--db-cream)]/75"
+              }`}
+            >
+              <Smartphone className="size-[1.05rem]" />
+            </span>
+            <span className="flex min-w-0 flex-1 flex-col">
+              <span className="text-[0.92rem] text-[color:var(--db-cream)] leading-tight">
+                Keep the screen awake
+              </span>
+              <span className="text-[0.74rem] text-[color:var(--db-muted)] leading-tight">
+                {awake
+                  ? "While a song plays, so the phone does not lock and cut it off"
+                  : "Off — the phone locks as usual, and the song stops with it"}
+              </span>
+            </span>
+            {awake && <Check className="size-4 shrink-0 text-[color:var(--db-amber)]" />}
+          </button>
+
+          {/*
+            Said in the app rather than only in a README, because it is the first thing
+            anyone hits on a phone and the answer is not in this page's power.
+          */}
+          <p className="mt-3 rounded-2xl bg-[color:oklch(0.96_0.017_90/0.06)] px-3.5 py-3 text-[0.73rem] text-[color:var(--db-muted)] leading-relaxed">
+            The songs play from YouTube, and every phone suspends that once the screen is
+            off — background YouTube audio is a feature of their app, not something a web
+            page can switch on. For playback with the phone actually locked, open this in{" "}
+            <span className="text-[color:var(--db-cream)]/85">Brave</span> and turn on
+            Background&nbsp;video&nbsp;playback, or use YouTube Premium. Everywhere else,
+            the setting above is the fix: the phone stays awake so the song keeps going.
+          </p>
 
           <button
             type="button"

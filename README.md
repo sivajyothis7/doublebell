@@ -143,6 +143,30 @@ repo rather than asked for, and it is worth naming them so they do not creep bac
 The one bar that is real: it has to be a Malayalam song that actually plays. Dead and
 un-embeddable IDs are silent gaps in a radio, so `npm run check-tracks` gates them.
 
+## Playing with the phone locked
+
+The honest position, because it is the first thing anyone asks on a phone.
+
+The audio comes from a YouTube embed, and every mobile platform suspends a
+backgrounded iframe's media. Background YouTube playback is a feature of *their* app
+behind Premium; it is not a capability a web page can switch on, and Brave's
+"Background video playback" works because Brave patches the page from outside — a
+browser can do that, a site cannot.
+
+So what this app does instead:
+
+- **Media Session** — the song, the film, the singer and the artwork go to the OS, so
+  the lock screen, the notification shade, a watch and the media keys all show it with
+  working previous / play / next. (An iframe can claim the session for itself; where
+  the YouTube embed does, its controls win and ours are ignored.)
+- **Screen Wake Lock** — while a song is playing the screen is held awake, so the phone
+  does not lock and cut the song off. On by default, with a toggle in Settings for
+  anyone who would rather keep the battery.
+
+For genuine locked-screen playback: open the site in Brave with Background video
+playback on, or use YouTube Premium. Both are said in the Settings sheet too, because
+a README is not where someone stuck on a bus will look.
+
 ## The visitor count
 
 `/api/presence` counts pages that sent a heartbeat in the last 60 seconds. The number

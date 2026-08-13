@@ -20,3 +20,12 @@ export const ADD_LINK_EVENT = "doublebell:add-link";
 
 /** The day/night mode changed. Detail: the resolved period. */
 export const PERIOD_EVENT = "doublebell:period";
+
+/**
+ * The "keep the screen awake" preference changed. No detail — listeners re-read it.
+ *
+ * Same pattern as the day/night switch: the toggle lives in the settings sheet and the
+ * thing that acts on it lives in the player, and an event is cheaper than lifting both
+ * into a context for one boolean.
+ */
+export const AWAKE_EVENT = "doublebell:awake";

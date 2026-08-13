@@ -16,7 +16,10 @@ import {
   type Track,
 } from "@/engine";
 import { ringDoubleBell } from "@/lib/bell";
-import { ADD_LINK_EVENT, SELECT_TRACK_EVENT } from "./events";
+import { ADD_LINK_EVENT, AWAKE_EVENT, SELECT_TRACK_EVENT } from "./events";
+import { useMediaSession } from "./use-media-session";
+import { readAwake } from "./settings-store";
+import { useWakeLock } from "./use-wake-lock";
 
 const TICK_MS = 250;
 
@@ -295,6 +298,33 @@ export function useRadio(deckRef: RefObject<HTMLDivElement | null>) {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [toggle, skipNext, skipPrev]);
 
+  /**
+   * Keep the screen awake while something is playing, unless the viewer turned that
+   * off. This is the answer to "it stops when the phone locks": the audio comes from
+   * a YouTube embed, which every mobile platform suspends once the screen is off, so
+   * the only thing this page can do is stop the screen going off.
+   */
+  const [awake, setAwake] = useState(true);
+  useEffect(() => {
+    setAwake(readAwake());
+    const onChange = () => setAwake(readAwake());
+    window.addEventListener(AWAKE_EVENT, onChange);
+    return () => window.removeEventListener(AWAKE_EVENT, onChange);
+  }, []);
+
+  const wakeLock = useWakeLock(awake && status === "playing");
+
+  /** Put the song on the lock screen, the notification shade and the media keys. */
+  useMediaSession(track, status === "playing", {
+    play,
+    pause,
+    skipNext,
+    skipPrev,
+    seek,
+    elapsed,
+    duration,
+  });
+
   return {
     track,
     queue,
@@ -315,5 +345,7 @@ export function useRadio(deckRef: RefObject<HTMLDivElement | null>) {
     addLink,
     seek,
     setScrubbing,
+    /** Whether the screen is currently being held awake, and whether it can be. */
+    wakeLock,
   };
 }
