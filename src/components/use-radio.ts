@@ -17,6 +17,7 @@ import {
 } from "@/engine";
 import { ringDoubleBell } from "@/lib/bell";
 import { ADD_LINK_EVENT, AWAKE_EVENT, SELECT_TRACK_EVENT } from "./events";
+import { useIntro } from "./use-intro";
 import { useMediaSession } from "./use-media-session";
 import { readAwake } from "./settings-store";
 import { useWakeLock } from "./use-wake-lock";
@@ -200,23 +201,82 @@ export function useRadio(deckRef: RefObject<HTMLDivElement | null>) {
     return () => window.clearInterval(id);
   }, [status, scrubbing]);
 
-  const play = useCallback(() => {
-    // Two bells means go. The click is the gesture the browser wants for audio,
-    // so this is also the moment the bell is allowed to make a sound at all.
-    if (!startedRef.current) ringDoubleBell();
+  /**
+   * The signature tune runs first, on every load, and the queue starts when it ends.
+   *
+   * `startedRef` is set here too, so that whatever happens — the tune autoplayed, or
+   * it waited for a tap, or the file failed to load — the playlist picks up by itself
+   * afterwards instead of needing a second press.
+   */
+  const introFinished = useCallback(() => {
+    /*
+     * Only hand over to the player if this document has actually been interacted
+     * with. The tune can autoplay without a gesture — some browsers allow a local
+     * `<audio>` on a site you visit often — but the YouTube embed never can, so
+     * calling `play()` there would start the song, have the autoplay policy stop it
+     * a second later, and leave the deck sitting at 0:01 looking broken. Which is
+     * exactly what it did.
+     *
+     * With no activation the track stays cued and the play button means what it says.
+     * On a phone this branch is rare anyway: nothing autoplays there, so the first
+     * touch starts the tune and that same touch is the activation this checks for.
+     */
+    const activated =
+      typeof navigator === "undefined" ||
+      !("userActivation" in navigator) ||
+      navigator.userActivation.hasBeenActive;
+
+    if (!activated) return;
+
     startedRef.current = true;
     setStarted(true);
     playerRef.current?.play();
   }, []);
 
-  const pause = useCallback(() => playerRef.current?.pause(), []);
+  const intro = useIntro(introFinished);
+  const introRef = useRef(intro);
+  introRef.current = intro;
+
+  const play = useCallback(() => {
+    startedRef.current = true;
+    setStarted(true);
+
+    // Still owed the opening tune: this press is the gesture that lets it sound, and
+    // the queue follows when it ends. No bell — the tune is the bell.
+    if (introRef.current.pending) {
+      introRef.current.start();
+      return;
+    }
+
+    // Two bells means go. The click is the gesture the browser wants for audio, so
+    // this is also the moment the bell is allowed to make a sound at all.
+    if (status === "idle" && elapsed === 0) ringDoubleBell();
+    playerRef.current?.play();
+  }, [status, elapsed]);
+
+  const pause = useCallback(() => {
+    // Pausing during the opening tune stops the tune, not a player that is not
+    // playing yet.
+    if (introRef.current.playing) {
+      introRef.current.skip();
+      return;
+    }
+    playerRef.current?.pause();
+  }, []);
 
   const toggle = useCallback(() => {
-    if (status === "playing" || status === "buffering") pause();
+    if (intro.playing || status === "playing" || status === "buffering") pause();
     else play();
-  }, [status, play, pause]);
+  }, [intro.playing, status, play, pause]);
 
-  const skipNext = useCallback(() => setQueue((current) => next(current)), []);
+  /** Skipping during the opening tune means "get on with it", not "next song". */
+  const skipNext = useCallback(() => {
+    if (introRef.current.pending) {
+      introRef.current.skip();
+      return;
+    }
+    setQueue((current) => next(current));
+  }, []);
   const skipPrev = useCallback(() => setQueue((current) => prev(current)), []);
 
   /**
@@ -312,7 +372,7 @@ export function useRadio(deckRef: RefObject<HTMLDivElement | null>) {
     return () => window.removeEventListener(AWAKE_EVENT, onChange);
   }, []);
 
-  const wakeLock = useWakeLock(awake && status === "playing");
+  const wakeLock = useWakeLock(awake && (status === "playing" || intro.playing));
 
   /** Put the song on the lock screen, the notification shade and the media keys. */
   useMediaSession(track, status === "playing", {
@@ -334,7 +394,9 @@ export function useRadio(deckRef: RefObject<HTMLDivElement | null>) {
     elapsed,
     duration,
     playable: playableCount(queue),
-    isPlaying: status === "playing",
+    // The opening tune counts as playing: the button should show pause, the record
+    // should turn, and the screen should stay awake while it sounds.
+    isPlaying: status === "playing" || intro.playing,
     isBusy: status === "buffering",
     play,
     pause,
@@ -347,5 +409,7 @@ export function useRadio(deckRef: RefObject<HTMLDivElement | null>) {
     setScrubbing,
     /** Whether the screen is currently being held awake, and whether it can be. */
     wakeLock,
+    /** The opening tune: pending until it has had its turn, playing while it sounds. */
+    intro,
   };
 }

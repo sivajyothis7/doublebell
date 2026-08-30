@@ -3,6 +3,7 @@
 import { Pause, Play, SkipBack, SkipForward } from "lucide-react";
 import { type RefObject, useId, useState } from "react";
 import { COVER_SIZE, coverUrl, formatTime, progressRatio, thumbnailUrl, type Track } from "@/engine";
+import { intro } from "@/content/intro";
 import { SHOW_PLAYER } from "@/lib/site";
 import type { Radio } from "./use-radio";
 
@@ -33,7 +34,9 @@ export default function PlayerCard({ radio, deckRef }: Props) {
       <Record track={radio.track} spinning={radio.isPlaying} />
 
       <div className="col-start-2 row-start-1 flex min-w-0 flex-col gap-1.5">
-        <Meta track={radio.track} />
+        {/* While the signature tune plays it is what is playing, so it is what the
+            deck says — the song underneath has not started yet. */}
+        {radio.intro.playing ? <IntroMeta /> : <Meta track={radio.track} />}
         <Seek radio={radio} id={seekId} />
       </div>
 
@@ -128,6 +131,27 @@ function Deck({ deckRef }: { deckRef: RefObject<HTMLDivElement | null> }) {
       title="Playing from YouTube"
     >
       <div ref={deckRef} />
+    </div>
+  );
+}
+
+/** The opening tune, shown in the deck for the seconds it is sounding. */
+function IntroMeta() {
+  return (
+    <div className="min-w-0">
+      <h2
+        className="truncate font-semibold text-[0.95rem] text-[color:var(--db-cream)] leading-snug sm:text-[1.18rem]"
+        lang="ml"
+      >
+        {intro.titleMl}
+      </h2>
+      <p className="truncate text-[0.66rem] text-[color:var(--db-muted)] sm:text-[0.78rem]">
+        {intro.title}
+        <span className="text-[color:var(--db-muted)]/70">
+          {" · "}
+          {intro.note}
+        </span>
+      </p>
     </div>
   );
 }
